@@ -92,4 +92,4 @@ jobs:
           key: ${{ hashFiles('packages/bootstrap/stage1/package.toml') }}
       - name: Build stage1
         run: |
-          make bootstrap-stage1 PROGRESS=plain BUILDER="docker buildx" ${{ inputs.no_cache && 'NOCACHE=1' || '' }}
+          make registry-bootstrap-stage1 PROGRESS=plain BUILDER="docker buildx" ${{ inputs.no_cache && 'NOCACHE=1' || '' }} REGISTRY_USERNAME=ghcr.io/siderolabs/stagex

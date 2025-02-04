@@ -83,34 +83,34 @@ jobs:
           python3 ./src/fetch.py filesystem
       - name: Build filesystem
         run: |
-          make core-filesystem PROGRESS=plain BUILDER="docker buildx" ${{ inputs.no_cache && 'NOCACHE=1' || '' }} PLATFORM=linux/amd64,linux/arm64
+          make registry-core-filesystem PROGRESS=plain BUILDER="docker buildx" ${{ inputs.no_cache && 'NOCACHE=1' || '' }} PLATFORM=linux/amd64,linux/arm64 REGISTRY_USERNAME=ghcr.io/siderolabs/stagex
       - name: Fetch binutils
         run: |
           python3 ./src/fetch.py binutils
       - name: Build binutils
         run: |
-          make core-binutils PROGRESS=plain BUILDER="docker buildx" ${{ inputs.no_cache && 'NOCACHE=1' || '' }} PLATFORM=linux/amd64,linux/arm64
+          make registry-core-binutils PROGRESS=plain BUILDER="docker buildx" ${{ inputs.no_cache && 'NOCACHE=1' || '' }} PLATFORM=linux/amd64,linux/arm64 REGISTRY_USERNAME=ghcr.io/siderolabs/stagex
       - name: Fetch busybox
         run: |
           python3 ./src/fetch.py busybox
       - name: Build busybox
         run: |
-          make core-busybox PROGRESS=plain BUILDER="docker buildx" ${{ inputs.no_cache && 'NOCACHE=1' || '' }} PLATFORM=linux/amd64,linux/arm64
+          make registry-core-busybox PROGRESS=plain BUILDER="docker buildx" ${{ inputs.no_cache && 'NOCACHE=1' || '' }} PLATFORM=linux/amd64,linux/arm64 REGISTRY_USERNAME=ghcr.io/siderolabs/stagex
       - name: Fetch gcc
         run: |
           python3 ./src/fetch.py gcc
       - name: Build gcc
         run: |
-          make core-gcc PROGRESS=plain BUILDER="docker buildx" ${{ inputs.no_cache && 'NOCACHE=1' || '' }} PLATFORM=linux/amd64,linux/arm64
+          make registry-core-gcc PROGRESS=plain BUILDER="docker buildx" ${{ inputs.no_cache && 'NOCACHE=1' || '' }} PLATFORM=linux/amd64,linux/arm64 REGISTRY_USERNAME=ghcr.io/siderolabs/stagex
       - name: Fetch make
         run: |
           python3 ./src/fetch.py make
       - name: Build make
         run: |
-          make core-make PROGRESS=plain BUILDER="docker buildx" ${{ inputs.no_cache && 'NOCACHE=1' || '' }} PLATFORM=linux/amd64,linux/arm64
+          make registry-core-make PROGRESS=plain BUILDER="docker buildx" ${{ inputs.no_cache && 'NOCACHE=1' || '' }} PLATFORM=linux/amd64,linux/arm64 REGISTRY_USERNAME=ghcr.io/siderolabs/stagex
       - name: Fetch musl
         run: |
           python3 ./src/fetch.py musl
       - name: Build musl
         run: |
-          make core-musl PROGRESS=plain BUILDER="docker buildx" ${{ inputs.no_cache && 'NOCACHE=1' || '' }} PLATFORM=linux/amd64,linux/arm64
+          make registry-core-musl PROGRESS=plain BUILDER="docker buildx" ${{ inputs.no_cache && 'NOCACHE=1' || '' }} PLATFORM=linux/amd64,linux/arm64 REGISTRY_USERNAME=ghcr.io/siderolabs/stagex

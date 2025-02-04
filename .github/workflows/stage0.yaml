@@ -80,4 +80,4 @@ jobs:
           python3 ./src/fetch.py stage0
       - name: Build stage0
         run: |
-          make bootstrap-stage0 PROGRESS=plain BUILDER="docker buildx" ${{ inputs.no_cache && 'NOCACHE=1' || '' }}
+          make registry-bootstrap-stage0 PROGRESS=plain BUILDER="docker buildx" ${{ inputs.no_cache && 'NOCACHE=1' || '' }} REGISTRY_USERNAME=ghcr.io/siderolabs/stagex

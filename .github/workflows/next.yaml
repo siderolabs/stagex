@@ -83,10 +83,10 @@ jobs:
           python3 ./src/fetch.py diffutils
       - name: Build diffutils
         run: |
-          make core-diffutils PROGRESS=plain BUILDER="docker buildx" ${{ inputs.no_cache && 'NOCACHE=1' || '' }} PLATFORM=linux/amd64,linux/arm64
+          make registry-core-diffutils PROGRESS=plain BUILDER="docker buildx" ${{ inputs.no_cache && 'NOCACHE=1' || '' }} PLATFORM=linux/amd64,linux/arm64 REGISTRY_USERNAME=ghcr.io/siderolabs/stagex
       - name: Fetch go
         run: |
           python3 ./src/fetch.py go
       - name: Build go
         run: |
-          make core-go PROGRESS=plain BUILDER="docker buildx" ${{ inputs.no_cache && 'NOCACHE=1' || '' }} PLATFORM=linux/amd64,linux/arm64
+          make registry-core-go PROGRESS=plain BUILDER="docker buildx" ${{ inputs.no_cache && 'NOCACHE=1' || '' }} PLATFORM=linux/amd64,linux/arm64 REGISTRY_USERNAME=ghcr.io/siderolabs/stagex
