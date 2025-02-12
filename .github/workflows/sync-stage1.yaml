@@ -1,0 +1,51 @@
+name: sync-stage1
+
+on: workflow_dispatch
+
+jobs:
+  build-push:
+    permissions:
+      packages: write
+    runs-on:
+      - self-hosted
+      - pkgs
+    steps:
+      -
+        name: gather-system-info
+        id: system-info
+        uses: kenchan0130/actions-system-info@v1.3.0
+        continue-on-error: true
+      -
+        name: print-system-info
+        run: |
+          MEMORY_GB=$((${{ steps.system-info.outputs.totalmem }}/1024/1024/1024))
+
+          OUTPUTS=(
+            "CPU Core: ${{ steps.system-info.outputs.cpu-core }}"
+            "CPU Model: ${{ steps.system-info.outputs.cpu-model }}"
+            "Hostname: ${{ steps.system-info.outputs.hostname }}"
+            "NodeName: ${NODE_NAME}"
+            "Kernel release: ${{ steps.system-info.outputs.kernel-release }}"
+            "Kernel version: ${{ steps.system-info.outputs.kernel-version }}"
+            "Name: ${{ steps.system-info.outputs.name }}"
+            "Platform: ${{ steps.system-info.outputs.platform }}"
+            "Release: ${{ steps.system-info.outputs.release }}"
+            "Total memory: ${MEMORY_GB} GB"
+          )
+
+          for OUTPUT in "${OUTPUTS[@]}";do
+            echo "${OUTPUT}"
+          done
+        continue-on-error: true
+      -
+        name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: imjasonh/setup-crane@31b88efe9de28ae0ffa220711af4b60be9435f6e
+      - name: Sync stage1
+        run: |
+          crane pull stagex/bootstrap-stage1@sha256:a307e282b2f018a005ec280f20824efd630977b546692bea427bad3f6f989c4f /tmp/stage1.tar
+          crane push /tmp/stage1.tar ghcr.io/siderolabs/stagex/bootstrap-stage1:latest
