@@ -1,6 +1,0 @@
-FROM stagex/pallet-gcc
-COPY --from=stagex/core-cmake . /
-COPY --from=stagex/core-samurai . /
-COPY --from=stagex/core-openssl . /
-COPY --from=stagex/core-python . /
-COPY --from=stagex/core-busybox . /

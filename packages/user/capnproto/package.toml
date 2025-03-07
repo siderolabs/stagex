@@ -1,9 +1,0 @@
-[package]
-name = "capnproto"
-version = "1.0.2"
-description = "TODO"
-
-[sources.capnproto]
-hash = "9057dbc0223366b74bbeca33a05de164a229b0377927f1b7ef3828cdd8cb1d7e"
-file = "capnproto-c++-{version}.tar.gz"
-mirrors = [ "https://capnproto.org/{file}",]

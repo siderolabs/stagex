@@ -1,9 +1,0 @@
-FROM stagex/pallet-gcc
-COPY --from=stagex/core-make . /
-COPY --from=stagex/core-perl . /
-COPY --from=stagex/core-autoconf . /
-COPY --from=stagex/core-automake . /
-COPY --from=stagex/core-libtool . /
-COPY --from=stagex/core-pkgconf . /
-COPY --from=stagex/core-zlib . /
-COPY --from=stagex/core-busybox . /

@@ -1,9 +1,0 @@
-[package]
-name = "icepick"
-version = "5224bc00a3cc909d376fba9ba08c5431041a2e45"
-description = "TODO"
-
-[sources.icepick]
-hash = "80fd3a9bb2209edb14b6e9891b6ce6e60b530416e1e414ff9fd722c780692e8f"
-file = "icepick-{version}.tar.gz"
-mirrors = [ "https://git.distrust.co/public/icepick/archive/{version}.tar.gz",]

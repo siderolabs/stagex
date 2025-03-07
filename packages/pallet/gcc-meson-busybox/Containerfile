@@ -1,3 +1,0 @@
-FROM stagex/pallet-gcc-cmake-busybox
-COPY --from=stagex/pallet-python . /
-COPY --from=stagex/core-meson . /

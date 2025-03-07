@@ -1,9 +1,0 @@
-[package]
-name = "json-glib"
-description = "TODO"
-version = "1.8.0"
-
-[sources.json-glib]
-hash = "97ef5eb92ca811039ad50a65f06633f1aae64792789307be7170795d8b319454"
-file = "json-glib-{version}.tar.xz"
-mirrors = ["https://download.gnome.org/sources/json-glib/1.8/{file}"]
