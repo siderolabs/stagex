@@ -1,18 +1,6 @@
 name: next
 
 on:
-  push:
-    branches:
-      - main
-      - ci
-      - release-*
-    tags:
-      - v*
-  pull_request:
-    branches:
-      - main
-      - ci
-      - release-*
   workflow_dispatch:
     inputs:
       no_cache:
@@ -60,7 +48,7 @@ jobs:
         run: |
           git clone https://codeberg.org/stagex/stagex.git $GITHUB_WORKSPACE
           cd $GITHUB_WORKSPACE
-          git checkout 2025.02.0
+          git checkout 2025.07.0
       -
         name: Set up Docker Buildx
         id: setup-buildx
