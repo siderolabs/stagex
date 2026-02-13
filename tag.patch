@@ -1,0 +1,24 @@
+diff --git a/Makefile b/Makefile
+index 56e66f2d..b91aea86 100644
+--- a/Makefile
++++ b/Makefile
+@@ -9,6 +9,7 @@ CHECK ?= 0## Run build with syntax checking enabled
+ NOCACHE ?= 0## Run build ignoring all existing cache
+ IMPORT ?= 0## Import and tag packages after build as ":local"
+ RELEASE := 0## Set release version for release targets
++TAG := latest## Tag or revision from which StageX images have been built, registry-% only
+ 
+ include src/global.mk
+ include src/macros.mk
+diff --git a/src/targets.py b/src/targets.py
+index dd9c0334..8a663407 100644
+--- a/src/targets.py
++++ b/src/targets.py
+@@ -66,6 +66,7 @@ registry-{stage}-{name}:
+ \t  build \\
+ \t  --ulimit nofile=2048:16384 \\
+ \t  --tag $(REGISTRY_USERNAME)/{stage}-{name}:{version} \\
++\t  --tag $(REGISTRY_USERNAME)/{stage}-{name}:$(TAG) \\
+ \t  --tag $(REGISTRY_USERNAME)/{stage}-{name}:latest \\
+ \t  --provenance=false \\
+ \t  --build-arg SOURCE_DATE_EPOCH=1 \\

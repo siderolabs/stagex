@@ -1,0 +1,48 @@
+From aa20d91f5b2190ed4235d5950d78aeb0dcccefd1 Mon Sep 17 00:00:00 2001
+From: Dmitrii Sharshakov <d3dx12.xx@gmail.com>
+Date: Sun, 15 Feb 2026 19:39:30 +0100
+Subject: [PATCH 4/4] Revert "Bump busybox to 1.37.0"
+
+This reverts commit 784fd459ae71976091269c42061726788f453c1b.
+---
+ packages/core/busybox/Containerfile | 3 +--
+ packages/core/busybox/package.toml  | 8 +++-----
+ 2 files changed, 4 insertions(+), 7 deletions(-)
+
+diff --git a/packages/core/busybox/Containerfile b/packages/core/busybox/Containerfile
+index 939f4437..b91337e6 100644
+--- a/packages/core/busybox/Containerfile
++++ b/packages/core/busybox/Containerfile
+@@ -42,8 +42,7 @@ RUN --network=none <<-EOF
+ 	done
+ 	make -j$(nproc)
+ 	mkdir -p /rootfs/usr/bin
+-	install -Dm0644 -t /rootfs/usr/share/licenses/busybox/ LICENSE
+-	install -Dm0755 -t /rootfs/usr/bin/ busybox
++	cp busybox /rootfs/usr/bin
+ 	cp busybox /usr/bin
+ 	cd /rootfs
+ 	/usr/bin/busybox --install -s usr/bin
+diff --git a/packages/core/busybox/package.toml b/packages/core/busybox/package.toml
+index a6262bbc..b70ce59a 100644
+--- a/packages/core/busybox/package.toml
++++ b/packages/core/busybox/package.toml
+@@ -1,12 +1,10 @@
+ [package]
+ name = "busybox"
+-version = "1.37.0"
+-description = "Utilities for rescue and embedded systems"
+-licenses = "GPL-2.0-only"
+-website = "https://www.busybox.ne"
++version = "1.36.1"
++description = "TODO"
+ 
+ [sources.busybox]
+-hash = "3311dff32e746499f4df0d5df04d7eb396382d7e108bb9250e7b519b837043a4"
++hash = "b8cc24c9574d809e7279c3be349795c5d5ceb6fdf19ca709f80cde50e47de314"
+ format = "tar.bz2"
+ file = "busybox-{version}.{format}"
+ mirrors = [ "https://busybox.net/downloads/{file}",]
+-- 
+2.52.0
+

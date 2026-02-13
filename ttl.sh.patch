@@ -1,0 +1,12 @@
+diff --git a/src/targets.py b/src/targets.py
+index 8a663407..adf6958c 100644
+--- a/src/targets.py
++++ b/src/targets.py
+@@ -68,6 +68,7 @@ registry-{stage}-{name}:
+ \t  --tag $(REGISTRY_USERNAME)/{stage}-{name}:{version} \\
+ \t  --tag $(REGISTRY_USERNAME)/{stage}-{name}:$(TAG) \\
+ \t  --tag $(REGISTRY_USERNAME)/{stage}-{name}:latest \\
++\t  --tag ttl.sh/siderolabs/stagex/{stage}-{name}:latest \\
+ \t  --provenance=false \\
+ \t  --build-arg SOURCE_DATE_EPOCH=1 \\
+ \t  --build-arg BUILDKIT_MULTI_PLATFORM=1 \\

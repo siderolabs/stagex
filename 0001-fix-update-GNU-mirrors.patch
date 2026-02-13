@@ -1,0 +1,632 @@
+From a3307f01eed10969c4300c4183272e7042e684ff Mon Sep 17 00:00:00 2001
+From: Jakub Panek <me@panekj.dev>
+Date: Thu, 2 Oct 2025 11:50:15 +0200
+Subject: [PATCH 1/4] fix: update GNU mirrors
+
+---
+ packages/bootstrap/stage1/package.toml        |  6 ++---
+ packages/bootstrap/stage2/package.toml        | 14 ++++++------
+ packages/bootstrap/stage3/package.toml        | 12 +++++-----
+ packages/core/autoconf/package.toml           |  2 +-
+ packages/core/automake/package.toml           |  2 +-
+ packages/core/bash/package.toml               |  2 +-
+ packages/core/bc/package.toml                 |  2 +-
+ packages/core/binutils/package.toml           |  2 +-
+ packages/core/coreutils/package.toml          |  2 +-
+ .../core/cross-x86_64-gnu-gcc/package.toml    | 12 +++++-----
+ packages/core/diffutils/package.toml          |  2 +-
+ packages/core/ed/package.toml                 |  2 +-
+ packages/core/findutils/package.toml          |  2 +-
+ packages/core/gawk/package.toml               |  2 +-
+ packages/core/gcc/package.toml                |  8 +++----
+ packages/core/gdbm/package.toml               |  2 +-
+ packages/core/gzip/package.toml               |  2 +-
+ packages/core/libtool/package.toml            |  2 +-
+ packages/core/m4/package.toml                 |  2 +-
+ packages/core/make/package.toml               |  2 +-
+ packages/core/ncurses/package.toml            |  2 +-
+ packages/core/readline/package.toml           | 22 +++++++++----------
+ packages/core/sed/package.toml                |  2 +-
+ packages/core/tar/package.toml                |  2 +-
+ packages/core/texinfo/package.toml            |  2 +-
+ packages/user/aspell/package.toml             |  2 +-
+ packages/user/autoconf-archive/package.toml   |  2 +-
+ packages/user/cpio/package.toml               |  2 +-
+ packages/user/glibc/package.toml              |  2 +-
+ packages/user/gperf/package.toml              |  2 +-
+ packages/user/groff/package.toml              |  2 +-
+ packages/user/libiconv/package.toml           |  2 +-
+ packages/user/libtasn1/package.toml           |  2 +-
+ packages/user/mtools/package.toml             |  2 +-
+ packages/user/patch/package.toml              |  2 +-
+ packages/user/xorriso/package.toml            |  2 +-
+ 36 files changed, 67 insertions(+), 67 deletions(-)
+
+diff --git a/packages/bootstrap/stage1/package.toml b/packages/bootstrap/stage1/package.toml
+index 3fb9c4bb..5aa77608 100644
+--- a/packages/bootstrap/stage1/package.toml
++++ b/packages/bootstrap/stage1/package.toml
+@@ -43,7 +43,7 @@ mirrors = [ "https://curl.se/download/{file}",]
+ [sources.make_421]
+ hash = "e40b8f018c1da64edd1cc9a6fce5fa63b2e707e404e20cad91fbae337c98a5b7"
+ file = "make-4.2.1.tar.gz"
+-mirrors = [ "http://ftp.gnu.org/gnu/make/{file}",]
++mirrors = [ "http://ftpmirror.gnu.org/gnu/make/{file}", "https://mirrors.kernel.org/gnu/make/{file}"]
+ 
+ [sources.tar_134]
+ hash = "63bebd26879c5e1eea4352f0d03c991f966aeb3ddeb3c7445c902568d5411d28"
+@@ -1013,7 +1013,7 @@ mirrors = [ "https://git.savannah.gnu.org/cgit/gnulib.git/snapshot/{file}", "htt
+ [sources.gcc_1040]
+ hash = "c9297d5bcd7cb43f3dfc2fed5389e948c9312fd962ef6a4ce455cff963ebe4f1"
+ file = "gcc-10.4.0.tar.xz"
+-mirrors = [ "http://ftp.gnu.org/gnu/gcc/gcc-10.4.0/{file}",]
++mirrors = [ "http://ftpmirror.gnu.org/gnu/gcc/gcc-10.4.0/{file}", "https://mirrors.kernel.org/gnu/gcc/gcc-13.1.0/{file}"]
+ 
+ [sources.sed_409]
+ hash = "c365874794187f8444e5d22998cd5888ffa47f36def4b77517a808dec27c0600"
+@@ -1193,7 +1193,7 @@ mirrors = [ "https://mirrors.kernel.org/gnu/binutils/{file}",]
+ [sources.gcc_1310]
+ hash = "61d684f0aa5e76ac6585ad8898a2427aade8979ed5e7f85492286c4dfc13ee86"
+ file = "gcc-13.1.0.tar.xz"
+-mirrors = [ "https://ftp.gnu.org/gnu/gcc/gcc-13.1.0/{file}", "https://mirrors.kernel.org/gnu/gcc/gcc-13.1.0/{file}"]
++mirrors = [ "https://ftpmirror.gnu.org/gnu/gcc/gcc-13.1.0/{file}", "https://mirrors.kernel.org/gnu/gcc/gcc-13.1.0/{file}"]
+ 
+ [sources.grep_37]
+ hash = "5c10da312460aec721984d5d83246d24520ec438dd48d7ab5a05dbc0d6d6823c"
+diff --git a/packages/bootstrap/stage2/package.toml b/packages/bootstrap/stage2/package.toml
+index 95862220..4ba5913d 100644
+--- a/packages/bootstrap/stage2/package.toml
++++ b/packages/bootstrap/stage2/package.toml
+@@ -13,40 +13,40 @@ mirrors = ["https://musl.libc.org/releases/{file}"]
+ version = "13.1.0"
+ hash = "61d684f0aa5e76ac6585ad8898a2427aade8979ed5e7f85492286c4dfc13ee86"
+ file = "gcc-{version}.tar.xz"
+-mirrors = ["https://ftp.gnu.org/gnu/gcc/gcc-{version}/{file}"]
++mirrors = ["https://ftpmirror.gnu.org/gnu/gcc/gcc-{version}/{file}", "https://mirrors.kernel.org/gnu/gcc/gcc-{version}/{file}"]
+ 
+ [sources.gmp]
+ version = "6.2.1"
+ hash = "eae9326beb4158c386e39a356818031bd28f3124cf915f8c5b1dc4c7a36b4d7c"
+ file = "gmp-{version}.tar.bz2"
+-mirrors = ["https://gcc.gnu.org/pub/gcc/infrastructure/{file}"]
++mirrors = ["https://gcc.gnu.org/pub/gcc/infrastructure/{file}", "https://ftpmirror.gnu.org/gnu/gmp/{file}", "https://mirrors.kernel.org/gnu/gmp/{file}"]
+ 
+ [sources.mpfr]
+ version = "4.1.0"
+ hash = "feced2d430dd5a97805fa289fed3fc8ff2b094c02d05287fd6133e7f1f0ec926"
+ file = "mpfr-{version}.tar.bz2"
+-mirrors = ["https://gcc.gnu.org/pub/gcc/infrastructure/{file}"]
++mirrors = ["https://gcc.gnu.org/pub/gcc/infrastructure/{file}", "https://ftpmirror.gnu.org/gnu/mpfr/{file}", "https://mirrors.kernel.org/gnu/mpfr/{file}"]
+ 
+ [sources.mpc]
+ version = "1.2.1"
+ hash = "17503d2c395dfcf106b622dc142683c1199431d095367c6aacba6eec30340459"
+ file = "mpc-{version}.tar.gz"
+-mirrors = ["https://gcc.gnu.org/pub/gcc/infrastructure/{file}"]
++mirrors = ["https://gcc.gnu.org/pub/gcc/infrastructure/{file}", "https://ftpmirror.gnu.org/gnu/mpc/{file}", "https://mirrors.kernel.org/gnu/mpc/{file}"]
+ 
+ [sources.isl]
+ version = "0.24"
+ hash = "fcf78dd9656c10eb8cf9fbd5f59a0b6b01386205fe1934b3b287a0a1898145c0"
+ file = "isl-{version}.tar.bz2"
+-mirrors = ["https://gcc.gnu.org/pub/gcc/infrastructure/{file}"]
++mirrors = ["https://libisl.sourceforge.io/{file}", "https://gcc.gnu.org/pub/gcc/infrastructure/{file}"]
+ 
+ [sources.linux]
+ version = "6.6"
+ hash = "d926a06c63dd8ac7df3f86ee1ffc2ce2a3b81a2d168484e76b5b389aba8e56d0"
+ file = "linux-{version}.tar.xz"
+-mirrors = ["https://mirrors.edge.kernel.org/pub/linux/kernel/v6.x/{file}"]
++mirrors = ["https://mirrors.kernel.org/pub/linux/kernel/v6.x/{file}"]
+ 
+ [sources.binutils]
+ version = "2.35"
+ hash = "1b11659fb49e20e18db460d44485f09442c8c56d5df165de9461eb09c8302f85"
+ file = "binutils-{version}.tar.xz"
+-mirrors = ["https://mirrors.kernel.org/gnu/binutils/{file}"]
++mirrors = ["https://ftpmirror.gnu.org/gnu/binutils/{file}", "https://mirrors.kernel.org/gnu/binutils/{file}"]
+diff --git a/packages/bootstrap/stage3/package.toml b/packages/bootstrap/stage3/package.toml
+index 84d272c0..23b15e2a 100644
+--- a/packages/bootstrap/stage3/package.toml
++++ b/packages/bootstrap/stage3/package.toml
+@@ -12,31 +12,31 @@ mirrors = ["https://musl.libc.org/releases/{file}"]
+ version = "13.1.0"
+ hash = "61d684f0aa5e76ac6585ad8898a2427aade8979ed5e7f85492286c4dfc13ee86"
+ file = "gcc-{version}.tar.xz"
+-mirrors = ["https://ftp.gnu.org/gnu/gcc/gcc-{version}/{file}"]
++mirrors = ["https://ftpmirror.gnu.org/gnu/gcc/gcc-{version}/{file}", "https://mirrors.kernel.org/gnu/gcc/gcc-{version}/{file}"]
+ 
+ [sources.gmp]
+ version = "6.2.1"
+ hash = "eae9326beb4158c386e39a356818031bd28f3124cf915f8c5b1dc4c7a36b4d7c"
+ file = "gmp-{version}.tar.bz2"
+-mirrors = ["https://gcc.gnu.org/pub/gcc/infrastructure/{file}"]
++mirrors = ["https://gcc.gnu.org/pub/gcc/infrastructure/{file}", "https://ftpmirror.gnu.org/gnu/gmp/{file}", "https://mirrors.kernel.org/gnu/gmp/{file}"]
+ 
+ [sources.mpfr]
+ version = "4.1.0"
+ hash = "feced2d430dd5a97805fa289fed3fc8ff2b094c02d05287fd6133e7f1f0ec926"
+ file = "mpfr-{version}.tar.bz2"
+-mirrors = ["https://gcc.gnu.org/pub/gcc/infrastructure/{file}"]
++mirrors = ["https://gcc.gnu.org/pub/gcc/infrastructure/{file}", "https://ftpmirror.gnu.org/gnu/mpfr/{file}", "https://mirrors.kernel.org/gnu/mpfr/{file}"]
+ 
+ [sources.mpc]
+ version = "1.2.1"
+ hash = "17503d2c395dfcf106b622dc142683c1199431d095367c6aacba6eec30340459"
+ file = "mpc-{version}.tar.gz"
+-mirrors = ["https://gcc.gnu.org/pub/gcc/infrastructure/{file}"]
++mirrors = ["https://gcc.gnu.org/pub/gcc/infrastructure/{file}", "https://ftpmirror.gnu.org/gnu/mpc/{file}", "https://mirrors.kernel.org/gnu/mpc/{file}"]
+ 
+ [sources.isl]
+ version = "0.24"
+ hash = "fcf78dd9656c10eb8cf9fbd5f59a0b6b01386205fe1934b3b287a0a1898145c0"
+ file = "isl-{version}.tar.bz2"
+-mirrors = ["https://gcc.gnu.org/pub/gcc/infrastructure/{file}"]
++mirrors = ["https://libisl.sourceforge.io/{file}", "https://gcc.gnu.org/pub/gcc/infrastructure/{file}"]
+ 
+ [sources.linux]
+ version = "6.6"
+@@ -60,7 +60,7 @@ mirrors = ["https://busybox.net/downloads/{file}"]
+ version = "4.4"
+ hash = "581f4d4e872da74b3941c874215898a7d35802f03732bdccee1d4a7979105d18"
+ file = "make-{version}.tar.gz"
+-mirrors = ["https://ftp.gnu.org/gnu/make/{file}"]
++mirrors = ["https://ftpmirror.gnu.org/gnu/make/{file}", "https://mirrors.kernel.org/gnu/make/{file}"]
+ 
+ [sources.go]
+ hash = "a6f3f4bbd3e6bdd626f79b668f212fbb5649daf75084fb79b678a0ae4d97423b"
+diff --git a/packages/core/autoconf/package.toml b/packages/core/autoconf/package.toml
+index 1e11801b..2512403f 100644
+--- a/packages/core/autoconf/package.toml
++++ b/packages/core/autoconf/package.toml
+@@ -7,4 +7,4 @@ description = "TODO"
+ hash = "ba885c1319578d6c94d46e9b0dceb4014caafe2490e437a0dbca3f270a223f5a"
+ format = "tar.xz"
+ file = "autoconf-{version}.{format}"
+-mirrors = [ "https://ftp.gnu.org/gnu/autoconf/{file}",]
++mirrors = [ "https://ftpmirror.gnu.org/gnu/autoconf/{file}", "https://mirrors.kernel.org/gnu/autoconf/{file}"]
+diff --git a/packages/core/automake/package.toml b/packages/core/automake/package.toml
+index 57b0d4ad..e998e6fc 100644
+--- a/packages/core/automake/package.toml
++++ b/packages/core/automake/package.toml
+@@ -7,4 +7,4 @@ description = "TODO"
+ hash = "f01d58cd6d9d77fbdca9eb4bbd5ead1988228fdb73d6f7a201f5f8d6b118b469"
+ format = "tar.xz"
+ file = "automake-{version}.{format}"
+-mirrors = [ "https://ftp.gnu.org/gnu/automake/{file}",]
++mirrors = [ "https://ftpmirror.gnu.org/gnu/automake/{file}", "https://mirrors.kernel.org/gnu/automake/{file}"]
+diff --git a/packages/core/bash/package.toml b/packages/core/bash/package.toml
+index d5249439..c09783c4 100644
+--- a/packages/core/bash/package.toml
++++ b/packages/core/bash/package.toml
+@@ -9,4 +9,4 @@ licenses = "GPL-3.0-or-later"
+ hash = "9599b22ecd1d5787ad7d3b7bf0c59f312b3396d1e281175dd1f8a4014da621ff"
+ format = "tar.gz"
+ file = "bash-{version}.{format}"
+-mirrors = [ "https://ftp.gnu.org/gnu/bash/{file}",]
++mirrors = [ "https://ftpmirror.gnu.org/gnu/bash/{file}", "https://mirrors.kernel.org/gnu/bash/{file}"]
+diff --git a/packages/core/bc/package.toml b/packages/core/bc/package.toml
+index e52c004a..25823033 100644
+--- a/packages/core/bc/package.toml
++++ b/packages/core/bc/package.toml
+@@ -7,4 +7,4 @@ description = "TODO"
+ hash = "62adfca89b0a1c0164c2cdca59ca210c1d44c3ffc46daf9931cf4942664cb02a"
+ format = "tar.gz"
+ file = "bc-{version}.{format}"
+-mirrors = [ "https://ftp.gnu.org/gnu/bc/{file}",]
++mirrors = [ "https://ftpmirror.gnu.org/gnu/bc/{file}", "https://mirrors.kernel.org/gnu/bc/{file}"]
+diff --git a/packages/core/binutils/package.toml b/packages/core/binutils/package.toml
+index 892c0b25..2155f08f 100644
+--- a/packages/core/binutils/package.toml
++++ b/packages/core/binutils/package.toml
+@@ -7,4 +7,4 @@ description = "TODO"
+ hash = "13f74202a3c4c51118b797a39ea4200d3f6cfbe224da6d1d95bb938480132dfd"
+ format = "tar.xz"
+ file = "binutils-{version}.{format}"
+-mirrors = [ "https://ftp.gnu.org/gnu/binutils/{file}",]
++mirrors = [ "https://ftpmirror.gnu.org/gnu/binutils/{file}", "https://mirrors.kernel.org/gnu/binutils/{file}"]
+diff --git a/packages/core/coreutils/package.toml b/packages/core/coreutils/package.toml
+index d68f04d9..3df3d315 100644
+--- a/packages/core/coreutils/package.toml
++++ b/packages/core/coreutils/package.toml
+@@ -7,4 +7,4 @@ description = "TODO"
+ hash = "ea613a4cf44612326e917201bbbcdfbd301de21ffc3b59b6e5c07e040b275e52"
+ format = "tar.xz"
+ file = "coreutils-{version}.{format}"
+-mirrors = [ "https://ftp.gnu.org/gnu/coreutils/{file}",]
++mirrors = [ "https://ftpmirror.gnu.org/gnu/coreutils/{file}", "https://mirrors.kernel.org/gnu/coreutils/{file}"]
+diff --git a/packages/core/cross-x86_64-gnu-gcc/package.toml b/packages/core/cross-x86_64-gnu-gcc/package.toml
+index 6d0df7be..198648b7 100644
+--- a/packages/core/cross-x86_64-gnu-gcc/package.toml
++++ b/packages/core/cross-x86_64-gnu-gcc/package.toml
+@@ -6,37 +6,37 @@ description = "TODO"
+ version = "13.1.0"
+ hash = "61d684f0aa5e76ac6585ad8898a2427aade8979ed5e7f85492286c4dfc13ee86"
+ file = "gcc-{version}.tar.xz"
+-mirrors = ["https://ftp.gnu.org/gnu/gcc/gcc-{version}/{file}"]
++mirrors = ["https://ftpmirror.gnu.org/gnu/gcc/gcc-{version}/{file}", "https://mirrors.kernel.org/gnu/gcc/gcc-{version}/{file}"]
+ 
+ [sources.gmp]
+ version = "6.2.1"
+ hash = "eae9326beb4158c386e39a356818031bd28f3124cf915f8c5b1dc4c7a36b4d7c"
+ file = "gmp-{version}.tar.bz2"
+-mirrors = ["https://gcc.gnu.org/pub/gcc/infrastructure/{file}"]
++mirrors = ["https://gcc.gnu.org/pub/gcc/infrastructure/{file}", "https://ftpmirror.gnu.org/gnu/gmp/{file}", "https://mirrors.kernel.org/gnu/gmp/{file}"]
+ 
+ [sources.mpfr]
+ version = "4.1.0"
+ hash = "feced2d430dd5a97805fa289fed3fc8ff2b094c02d05287fd6133e7f1f0ec926"
+ file = "mpfr-{version}.tar.bz2"
+-mirrors = ["https://gcc.gnu.org/pub/gcc/infrastructure/{file}"]
++mirrors = ["https://gcc.gnu.org/pub/gcc/infrastructure/{file}", "https://ftpmirror.gnu.org/gnu/mpfr/{file}", "https://mirrors.kernel.org/gnu/mpfr/{file}"]
+ 
+ [sources.mpc]
+ version = "1.2.1"
+ hash = "17503d2c395dfcf106b622dc142683c1199431d095367c6aacba6eec30340459"
+ file = "mpc-{version}.tar.gz"
+-mirrors = ["https://gcc.gnu.org/pub/gcc/infrastructure/{file}"]
++mirrors = ["https://gcc.gnu.org/pub/gcc/infrastructure/{file}", "https://ftpmirror.gnu.org/gnu/mpc/{file}", "https://mirrors.kernel.org/gnu/mpc/{file}"]
+ 
+ [sources.isl]
+ version = "0.24"
+ hash = "fcf78dd9656c10eb8cf9fbd5f59a0b6b01386205fe1934b3b287a0a1898145c0"
+ file = "isl-{version}.tar.bz2"
+-mirrors = ["https://gcc.gnu.org/pub/gcc/infrastructure/{file}"]
++mirrors = ["https://libisl.sourceforge.io/{file}", "https://gcc.gnu.org/pub/gcc/infrastructure/{file}"]
+ 
+ [sources.glibc]
+ version = "2.40"
+ hash = "2abc038f5022949cb67e996c3cae0e7764f99b009f0b9b7fd954dfc6577b599e"
+ file = "glibc-{version}.tar.gz"
+-mirrors = ["http://ftpmirror.gnu.org/gnu/glibc/{file}"]
++mirrors = ["http://ftpmirror.gnu.org/gnu/glibc/{file}", "https://mirrors.kernel.org/gnu/glibc/{file}"]
+ 
+ [sources.binutils]
+ version = "2.35"
+diff --git a/packages/core/diffutils/package.toml b/packages/core/diffutils/package.toml
+index 47c36b21..13260f72 100644
+--- a/packages/core/diffutils/package.toml
++++ b/packages/core/diffutils/package.toml
+@@ -7,4 +7,4 @@ description = "TODO"
+ hash = "90e5e93cc724e4ebe12ede80df1634063c7a855692685919bfe60b556c9bd09e"
+ format = "tar.xz"
+ file = "diffutils-{version}.{format}"
+-mirrors = [ "https://ftp.gnu.org/gnu/diffutils/{file}",]
++mirrors = [ "https://ftpmirror.gnu.org/gnu/diffutils/{file}", "https://mirrors.kernel.org/gnu/diffutils/{file}"]
+diff --git a/packages/core/ed/package.toml b/packages/core/ed/package.toml
+index 0e9932da..edcfa95d 100644
+--- a/packages/core/ed/package.toml
++++ b/packages/core/ed/package.toml
+@@ -7,4 +7,4 @@ description = "TODO"
+ hash = "c6030defe6ae172f1687906d7354054c75a6a9130af319d4e73c50a91959c5a6"
+ format = "tar.lz"
+ file = "ed-{version}.{format}"
+-mirrors = [ "https://ftp.gnu.org/gnu/ed/{file}",]
++mirrors = [ "https://ftpmirror.gnu.org/gnu/ed/{file}", "https://mirrors.kernel.org/gnu/ed/{file}"]
+diff --git a/packages/core/findutils/package.toml b/packages/core/findutils/package.toml
+index d944222f..4b0b4e11 100644
+--- a/packages/core/findutils/package.toml
++++ b/packages/core/findutils/package.toml
+@@ -7,4 +7,4 @@ description = "TODO"
+ hash = "a2bfb8c09d436770edc59f50fa483e785b161a3b7b9d547573cb08065fd462fe"
+ format = "tar.xz"
+ file = "findutils-{version}.{format}"
+-mirrors = [ "https://ftp.gnu.org/gnu/findutils/{file}",]
++mirrors = [ "https://ftpmirror.gnu.org/gnu/findutils/{file}", "https://mirrors.kernel.org/gnu/findutils/{file}"]
+diff --git a/packages/core/gawk/package.toml b/packages/core/gawk/package.toml
+index 35774e3a..8026f684 100644
+--- a/packages/core/gawk/package.toml
++++ b/packages/core/gawk/package.toml
+@@ -7,4 +7,4 @@ description = "TODO"
+ hash = "ca9c16d3d11d0ff8c69d79dc0b47267e1329a69b39b799895604ed447d3ca90b"
+ format = "tar.xz"
+ file = "gawk-{version}.{format}"
+-mirrors = [ "https://ftp.gnu.org/gnu/gawk/{file}",]
++mirrors = [ "https://ftpmirror.gnu.org/gnu/gawk/{file}", "https://mirrors.kernel.org/gnu/gawk/{file}"]
+diff --git a/packages/core/gcc/package.toml b/packages/core/gcc/package.toml
+index d2c1bf03..801beb49 100644
+--- a/packages/core/gcc/package.toml
++++ b/packages/core/gcc/package.toml
+@@ -14,25 +14,25 @@ hash = "eae9326beb4158c386e39a356818031bd28f3124cf915f8c5b1dc4c7a36b4d7c"
+ format = "tar.bz2"
+ version = "6.2.1"
+ file = "gmp-{version}.{format}"
+-mirrors = [ "https://gcc.gnu.org/pub/gcc/infrastructure/{file}",]
++mirrors = ["https://gcc.gnu.org/pub/gcc/infrastructure/{file}", "https://ftpmirror.gnu.org/gnu/gmp/{file}", "https://mirrors.kernel.org/gnu/gmp/{file}"]
+ 
+ [sources.mpfr]
+ hash = "feced2d430dd5a97805fa289fed3fc8ff2b094c02d05287fd6133e7f1f0ec926"
+ format = "tar.bz2"
+ version = "4.1.0"
+ file = "mpfr-{version}.{format}"
+-mirrors = [ "https://gcc.gnu.org/pub/gcc/infrastructure/{file}",]
++mirrors = ["https://gcc.gnu.org/pub/gcc/infrastructure/{file}", "https://ftpmirror.gnu.org/gnu/mpfr/{file}", "https://mirrors.kernel.org/gnu/mpfr/{file}"]
+ 
+ [sources.mpc]
+ hash = "17503d2c395dfcf106b622dc142683c1199431d095367c6aacba6eec30340459"
+ format = "tar.gz"
+ version = "1.2.1"
+ file = "mpc-{version}.{format}"
+-mirrors = [ "https://gcc.gnu.org/pub/gcc/infrastructure/{file}",]
++mirrors = ["https://gcc.gnu.org/pub/gcc/infrastructure/{file}", "https://ftpmirror.gnu.org/gnu/mpc/{file}", "https://mirrors.kernel.org/gnu/mpc/{file}"]
+ 
+ [sources.isl]
+ hash = "fcf78dd9656c10eb8cf9fbd5f59a0b6b01386205fe1934b3b287a0a1898145c0"
+ format = "tar.bz2"
+ version = "0.24"
+ file = "isl-{version}.{format}"
+-mirrors = [ "https://gcc.gnu.org/pub/gcc/infrastructure/{file}",]
++mirrors = ["https://libisl.sourceforge.io/{file}", "https://gcc.gnu.org/pub/gcc/infrastructure/{file}"]
+diff --git a/packages/core/gdbm/package.toml b/packages/core/gdbm/package.toml
+index 8644780f..2e88582f 100644
+--- a/packages/core/gdbm/package.toml
++++ b/packages/core/gdbm/package.toml
+@@ -7,4 +7,4 @@ description = "TODO"
+ hash = "74b1081d21fff13ae4bd7c16e5d6e504a4c26f7cde1dca0d963a484174bbcacd"
+ format = "tar.gz"
+ file = "gdbm-{version}.{format}"
+-mirrors = [ "https://ftp.gnu.org/gnu/gdbm/{file}",]
++mirrors = [ "https://ftpmirror.gnu.org/gnu/gdbm/{file}", "https://mirrors.kernel.org/gnu/gdbm/{file}"]
+diff --git a/packages/core/gzip/package.toml b/packages/core/gzip/package.toml
+index 2bc71555..c7df45b7 100644
+--- a/packages/core/gzip/package.toml
++++ b/packages/core/gzip/package.toml
+@@ -7,4 +7,4 @@ description = "TODO"
+ hash = "7454eb6935db17c6655576c2e1b0fabefd38b4d0936e0f87f48cd062ce91a057"
+ format = "tar.xz"
+ file = "gzip-{version}.{format}"
+-mirrors = [ "https://ftp.gnu.org/gnu/gzip/{file}",]
++mirrors = [ "https://ftpmirror.gnu.org/gnu/gzip/{file}", "https://mirrors.kernel.org/gnu/gzip/{file}"]
+diff --git a/packages/core/libtool/package.toml b/packages/core/libtool/package.toml
+index 4e372b5d..c37eb1dd 100644
+--- a/packages/core/libtool/package.toml
++++ b/packages/core/libtool/package.toml
+@@ -7,4 +7,4 @@ description = "TODO"
+ hash = "7c87a8c2c8c0fc9cd5019e402bed4292462d00a718a7cd5f11218153bf28b26f"
+ format = "tar.xz"
+ file = "libtool-{version}.{format}"
+-mirrors = [ "https://ftp.gnu.org/gnu/libtool/{file}",]
++mirrors = [ "https://ftpmirror.gnu.org/gnu/libtool/{file}", "https://mirrors.kernel.org/gnu/libtool/{file}"]
+diff --git a/packages/core/m4/package.toml b/packages/core/m4/package.toml
+index 31b9ba58..53313399 100644
+--- a/packages/core/m4/package.toml
++++ b/packages/core/m4/package.toml
+@@ -7,4 +7,4 @@ description = "TODO"
+ hash = "ab2633921a5cd38e48797bf5521ad259bdc4b979078034a3b790d7fec5493fab"
+ format = "tar.gz"
+ file = "m4-{version}.{format}"
+-mirrors = [ "https://ftp.gnu.org/gnu/m4/{file}",]
++mirrors = [ "https://ftpmirror.gnu.org/gnu/m4/{file}", "https://mirrors.kernel.org/gnu/m4/{file}"]
+diff --git a/packages/core/make/package.toml b/packages/core/make/package.toml
+index c2e47ae0..cd47656a 100644
+--- a/packages/core/make/package.toml
++++ b/packages/core/make/package.toml
+@@ -7,4 +7,4 @@ description = "TODO"
+ hash = "581f4d4e872da74b3941c874215898a7d35802f03732bdccee1d4a7979105d18"
+ format = "tar.gz"
+ file = "make-{version}.{format}"
+-mirrors = [ "https://ftp.gnu.org/gnu/make/{file}",]
++mirrors = [ "https://ftpmirror.gnu.org/gnu/make/{file}", "https://mirrors.kernel.org/gnu/make/{file}"]
+diff --git a/packages/core/ncurses/package.toml b/packages/core/ncurses/package.toml
+index 324d4d43..3468508c 100644
+--- a/packages/core/ncurses/package.toml
++++ b/packages/core/ncurses/package.toml
+@@ -7,4 +7,4 @@ description = "TODO"
+ hash = "136d91bc269a9a5785e5f9e980bc76ab57428f604ce3e5a5a90cebc767971cc6"
+ format = "tar.gz"
+ file = "ncurses-{version}.{format}"
+-mirrors = [ "https://ftp.gnu.org/gnu/ncurses/{file}",]
++mirrors = [ "https://ftpmirror.gnu.org/gnu/ncurses/{file}", "https://mirrors.kernel.org/gnu/ncurses/{file}"]
+diff --git a/packages/core/readline/package.toml b/packages/core/readline/package.toml
+index 0c3bc060..618083f5 100644
+--- a/packages/core/readline/package.toml
++++ b/packages/core/readline/package.toml
+@@ -7,54 +7,54 @@ description = "TODO"
+ hash = "3feb7171f16a84ee82ca18a36d7b9be109a52c04f492a053331d7d1095007c35"
+ format = "tar.gz"
+ file = "readline-{version}.{format}"
+-mirrors = [ "http://ftp.gnu.org/gnu/readline/{file}",]
++mirrors = [ "http://ftpmirror.gnu.org/gnu/readline/{file}", "https://mirrors.kernel.org/gnu/readline/{file}"]
+ 
+ [sources.readline82-001]
+ hash = "bbf97f1ec40a929edab5aa81998c1e2ef435436c597754916e6a5868f273aff7"
+ file = "readline82-001"
+-mirrors = [ "http://ftp.gnu.org/gnu/readline/readline-{version}-patches/{file}",]
++mirrors = [ "http://ftpmirror.gnu.org/gnu/readline/readline-{version}-patches/{file}", "https://mirrors.kernel.org/gnu/readline/readline-{version}-patches/{file}"]
+ 
+ [sources.readline82-002]
+ hash = "e06503822c62f7bc0d9f387d4c78c09e0ce56e53872011363c74786c7cd4c053"
+ file = "readline82-002"
+-mirrors = [ "http://ftp.gnu.org/gnu/readline/readline-{version}-patches/{file}",]
++mirrors = [ "http://ftpmirror.gnu.org/gnu/readline/readline-{version}-patches/{file}", "https://mirrors.kernel.org/gnu/readline/readline-{version}-patches/{file}"]
+ 
+ [sources.readline82-003]
+ hash = "24f587ba46b46ed2b1868ccaf9947504feba154bb8faabd4adaea63ef7e6acb0"
+ file = "readline82-003"
+-mirrors = [ "http://ftp.gnu.org/gnu/readline/readline-{version}-patches/{file}",]
++mirrors = [ "http://ftpmirror.gnu.org/gnu/readline/readline-{version}-patches/{file}", "https://mirrors.kernel.org/gnu/readline/readline-{version}-patches/{file}"]
+ 
+ [sources.readline82-004]
+ hash = "79572eeaeb82afdc6869d7ad4cba9d4f519b1218070e17fa90bbecd49bd525ac"
+ file = "readline82-004"
+-mirrors = [ "http://ftp.gnu.org/gnu/readline/readline-{version}-patches/{file}",]
++mirrors = [ "http://ftpmirror.gnu.org/gnu/readline/readline-{version}-patches/{file}", "https://mirrors.kernel.org/gnu/readline/readline-{version}-patches/{file}"]
+ 
+ [sources.readline82-005]
+ hash = "622ba387dae5c185afb4b9b20634804e5f6c1c6e5e87ebee7c35a8f065114c99"
+ file = "readline82-005"
+-mirrors = [ "http://ftp.gnu.org/gnu/readline/readline-{version}-patches/{file}",]
++mirrors = [ "http://ftpmirror.gnu.org/gnu/readline/readline-{version}-patches/{file}", "https://mirrors.kernel.org/gnu/readline/readline-{version}-patches/{file}"]
+ 
+ [sources.readline82-006]
+ hash = "c7b45ff8c0d24d81482e6e0677e81563d13c74241f7b86c4de00d239bc81f5a1"
+ file = "readline82-006"
+-mirrors = [ "http://ftp.gnu.org/gnu/readline/readline-{version}-patches/{file}",]
++mirrors = [ "http://ftpmirror.gnu.org/gnu/readline/readline-{version}-patches/{file}", "https://mirrors.kernel.org/gnu/readline/readline-{version}-patches/{file}"]
+ 
+ [sources.readline82-007]
+ hash = "5911a5b980d7900aabdbee483f86dab7056851e6400efb002776a0a4a1bab6f6"
+ file = "readline82-007"
+-mirrors = [ "http://ftp.gnu.org/gnu/readline/readline-{version}-patches/{file}",]
++mirrors = [ "http://ftpmirror.gnu.org/gnu/readline/readline-{version}-patches/{file}", "https://mirrors.kernel.org/gnu/readline/readline-{version}-patches/{file}"]
+ 
+ [sources.readline82-008]
+ hash = "a177edc9d8c9f82e8c19d0630ab351f3fd1b201d655a1ddb5d51c4cee197b26a"
+ file = "readline82-008"
+-mirrors = [ "http://ftp.gnu.org/gnu/readline/readline-{version}-patches/{file}",]
++mirrors = [ "http://ftpmirror.gnu.org/gnu/readline/readline-{version}-patches/{file}", "https://mirrors.kernel.org/gnu/readline/readline-{version}-patches/{file}"]
+ 
+ [sources.readline82-009]
+ hash = "3d9885e692e1998523fd5c61f558cecd2aafd67a07bd3bfe1d7ad5a31777a116"
+ file = "readline82-009"
+-mirrors = [ "http://ftp.gnu.org/gnu/readline/readline-{version}-patches/{file}",]
++mirrors = [ "http://ftpmirror.gnu.org/gnu/readline/readline-{version}-patches/{file}", "https://mirrors.kernel.org/gnu/readline/readline-{version}-patches/{file}"]
+ 
+ [sources.readline82-010]
+ hash = "758e2ec65a0c214cfe6161f5cde3c5af4377c67d820ea01d13de3ca165f67b4c"
+ file = "readline82-010"
+-mirrors = [ "http://ftp.gnu.org/gnu/readline/readline-{version}-patches/{file}",]
++mirrors = [ "http://ftpmirror.gnu.org/gnu/readline/readline-{version}-patches/{file}", "https://mirrors.kernel.org/gnu/readline/readline-{version}-patches/{file}"]
+diff --git a/packages/core/sed/package.toml b/packages/core/sed/package.toml
+index fe2d3d9c..efbed1a6 100644
+--- a/packages/core/sed/package.toml
++++ b/packages/core/sed/package.toml
+@@ -7,4 +7,4 @@ description = "TODO"
+ hash = "6e226b732e1cd739464ad6862bd1a1aba42d7982922da7a53519631d24975181"
+ format = "tar.xz"
+ file = "sed-{version}.{format}"
+-mirrors = [ "https://ftp.gnu.org/gnu/sed/{file}",]
++mirrors = [ "https://ftpmirror.gnu.org/gnu/sed/{file}", "https://mirrors.kernel.org/gnu/sed/{file}"]
+diff --git a/packages/core/tar/package.toml b/packages/core/tar/package.toml
+index c8db7207..14697e28 100644
+--- a/packages/core/tar/package.toml
++++ b/packages/core/tar/package.toml
+@@ -7,4 +7,4 @@ description = "TODO"
+ hash = "4d62ff37342ec7aed748535323930c7cf94acf71c3591882b26a7ea50f3edc16"
+ format = "tar.xz"
+ file = "tar-{version}.{format}"
+-mirrors = [ "https://ftp.gnu.org/gnu/tar/{file}",]
++mirrors = [ "https://ftpmirror.gnu.org/gnu/tar/{file}", "https://mirrors.kernel.org/gnu/tar/{file}"]
+diff --git a/packages/core/texinfo/package.toml b/packages/core/texinfo/package.toml
+index 8e6a3be6..4d5a9aef 100644
+--- a/packages/core/texinfo/package.toml
++++ b/packages/core/texinfo/package.toml
+@@ -7,4 +7,4 @@ description = "TODO"
+ hash = "deeec9f19f159e046fdf8ad22231981806dac332cc372f1c763504ad82b30953"
+ format = "tar.xz"
+ file = "texinfo-{version}.{format}"
+-mirrors = [ "https://ftp.gnu.org/gnu/texinfo/{file}",]
++mirrors = [ "https://ftpmirror.gnu.org/gnu/texinfo/{file}", "https://mirrors.kernel.org/gnu/texinfo/{file}"]
+diff --git a/packages/user/aspell/package.toml b/packages/user/aspell/package.toml
+index 12a77e5a..22e9f7f0 100644
+--- a/packages/user/aspell/package.toml
++++ b/packages/user/aspell/package.toml
+@@ -7,4 +7,4 @@ description = "TODO"
+ hash = "d6da12b34d42d457fa604e435ad484a74b2effcd120ff40acd6bb3fb2887d21b"
+ format = "tar.gz"
+ file = "aspell-{version}.{format}"
+-mirrors = [ "https://ftp.gnu.org/gnu/aspell/{file}",]
++mirrors = [ "https://ftpmirror.gnu.org/gnu/aspell/{file}", "https://mirrors.kernel.org/gnu/aspell/{file}"]
+diff --git a/packages/user/autoconf-archive/package.toml b/packages/user/autoconf-archive/package.toml
+index 4d03dd6d..5b474a2f 100644
+--- a/packages/user/autoconf-archive/package.toml
++++ b/packages/user/autoconf-archive/package.toml
+@@ -7,4 +7,4 @@ description = "TODO"
+ hash = "71d4048479ae28f1f5794619c3d72df9c01df49b1c628ef85fde37596dc31a33"
+ format = "tar.xz"
+ file = "autoconf-archive-{version}.{format}"
+-mirrors = [ "https://ftp.gnu.org/gnu/autoconf-archive/{file}",]
++mirrors = [ "https://ftpmirror.gnu.org/gnu/autoconf-archive/{file}", "https://mirrors.kernel.org/gnu/autoconf-archive/{file}"]
+diff --git a/packages/user/cpio/package.toml b/packages/user/cpio/package.toml
+index 5f57c0f0..4d8bdf82 100644
+--- a/packages/user/cpio/package.toml
++++ b/packages/user/cpio/package.toml
+@@ -7,4 +7,4 @@ description = "TODO"
+ hash = "efa50ef983137eefc0a02fdb51509d624b5e3295c980aa127ceee4183455499e"
+ format = "tar.gz"
+ file = "cpio-{version}.{format}"
+-mirrors = [ "https://ftp.gnu.org/gnu/cpio/{file}",]
++mirrors = [ "https://ftpmirror.gnu.org/gnu/cpio/{file}", "https://mirrors.kernel.org/gnu/cpio/{file}"]
+diff --git a/packages/user/glibc/package.toml b/packages/user/glibc/package.toml
+index b7c0ff2e..9e91557f 100644
+--- a/packages/user/glibc/package.toml
++++ b/packages/user/glibc/package.toml
+@@ -6,4 +6,4 @@ description = "TODO"
+ [sources.glibc]
+ hash = "2abc038f5022949cb67e996c3cae0e7764f99b009f0b9b7fd954dfc6577b599e"
+ file = "glibc-{version}.tar.gz"
+-mirrors = ["https://ftpmirror.gnu.org/gnu/glibc/{file}"]
++mirrors = ["https://ftpmirror.gnu.org/gnu/glibc/{file}", "https://mirrors.kernel.org/gnu/glibc/{file}"]
+diff --git a/packages/user/gperf/package.toml b/packages/user/gperf/package.toml
+index eba43925..4747e375 100644
+--- a/packages/user/gperf/package.toml
++++ b/packages/user/gperf/package.toml
+@@ -7,4 +7,4 @@ description = "TODO"
+ hash = "588546b945bba4b70b6a3a616e80b4ab466e3f33024a352fc2198112cdbb3ae2"
+ format = "tar.gz"
+ file = "gperf-{version}.{format}"
+-mirrors = [ "http://ftp.gnu.org/pub/gnu/gperf/{file}",]
++mirrors = [ "http://ftpmirror.gnu.org/pub/gnu/gperf/{file}", "https://mirrors.kernel.org/gnu/gperf/{file}"]
+diff --git a/packages/user/groff/package.toml b/packages/user/groff/package.toml
+index 70180fa6..b529fbbb 100644
+--- a/packages/user/groff/package.toml
++++ b/packages/user/groff/package.toml
+@@ -7,4 +7,4 @@ description = "TODO"
+ hash = "6b9757f592b7518b4902eb6af7e54570bdccba37a871fddb2d30ae3863511c13"
+ format = "tar.gz"
+ file = "groff-{version}.{format}"
+-mirrors = [ "https://ftp.gnu.org/gnu/groff/{file}",]
++mirrors = [ "https://ftpmirror.gnu.org/gnu/groff/{file}", "https://mirrors.kernel.org/gnu/groff/{file}"]
+diff --git a/packages/user/libiconv/package.toml b/packages/user/libiconv/package.toml
+index a184efad..c896a4df 100644
+--- a/packages/user/libiconv/package.toml
++++ b/packages/user/libiconv/package.toml
+@@ -7,4 +7,4 @@ description = "TODO"
+ hash = "8f74213b56238c85a50a5329f77e06198771e70dd9a739779f4c02f65d971313"
+ format = "tar.gz"
+ file = "libiconv-{version}.{format}"
+-mirrors = [ "https://ftp.gnu.org/gnu/libiconv/{file}",]
++mirrors = [ "https://ftpmirror.gnu.org/gnu/libiconv/{file}", "https://mirrors.kernel.org/gnu/libiconv/{file}"]
+diff --git a/packages/user/libtasn1/package.toml b/packages/user/libtasn1/package.toml
+index eae59a9a..4e3d61eb 100644
+--- a/packages/user/libtasn1/package.toml
++++ b/packages/user/libtasn1/package.toml
+@@ -7,4 +7,4 @@ description = "TODO"
+ hash = "1613f0ac1cf484d6ec0ce3b8c06d56263cc7242f1c23b30d82d23de345a63f7a"
+ format = "tar.gz"
+ file = "libtasn1-{version}.{format}"
+-mirrors = [ "https://ftp.gnu.org/gnu/libtasn1/{file}",]
++mirrors = [ "https://ftpmirror.gnu.org/gnu/libtasn1/{file}", "https://mirrors.kernel.org/gnu/libtasn1/{file}"]
+diff --git a/packages/user/mtools/package.toml b/packages/user/mtools/package.toml
+index c842bc6f..530bb8d5 100644
+--- a/packages/user/mtools/package.toml
++++ b/packages/user/mtools/package.toml
+@@ -7,4 +7,4 @@ description = "TODO"
+ hash = "0b008a96bd0efe0e542fa4383d469af66bc4a93394990b103730a8160a67d618"
+ format = "tar.bz2"
+ file = "mtools-{version}.{format}"
+-mirrors = [ "https://ftp.gnu.org/gnu/mtools/{file}",]
++mirrors = [ "https://ftpmirror.gnu.org/gnu/mtools/{file}", "https://mirrors.kernel.org/gnu/mtools/{file}"]
+diff --git a/packages/user/patch/package.toml b/packages/user/patch/package.toml
+index ef0176b8..31371692 100644
+--- a/packages/user/patch/package.toml
++++ b/packages/user/patch/package.toml
+@@ -7,4 +7,4 @@ description = "Utility to apply diffs to files"
+ hash = "f87cee69eec2b4fcbf60a396b030ad6aa3415f192aa5f7ee84cad5e11f7f5ae3"
+ format = "tar.xz"
+ file = "patch-{version}.{format}"
+-mirrors = [ "https://ftp.gnu.org/gnu/patch/{file}", ]
++mirrors = [ "https://ftpmirror.gnu.org/gnu/patch/{file}", "https://mirrors.kernel.org/gnu/patch/{file}"]
+diff --git a/packages/user/xorriso/package.toml b/packages/user/xorriso/package.toml
+index 6b8ea65d..8b84d565 100644
+--- a/packages/user/xorriso/package.toml
++++ b/packages/user/xorriso/package.toml
+@@ -7,4 +7,4 @@ description = "TODO"
+ hash = "786f9f5df9865cc5b0c1fecee3d2c0f5e04cab8c9a859bd1c9c7ccd4964fdae1"
+ format = "pl02.tar.gz"
+ file = "xorriso-{version}.{format}"
+-mirrors = [ "https://ftp.gnu.org/gnu/xorriso/{file}",]
++mirrors = [ "https://ftpmirror.gnu.org/gnu/xorriso/{file}", "https://mirrors.kernel.org/gnu/xorriso/{file}"]
+-- 
+2.52.0
+
