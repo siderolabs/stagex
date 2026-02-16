@@ -1,12 +1,12 @@
 diff --git a/Makefile b/Makefile
-index 56e66f2d..b91aea86 100644
+index f8d519bf..a5565e76 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -9,6 +9,7 @@ CHECK ?= 0## Run build with syntax checking enabled
- NOCACHE ?= 0## Run build ignoring all existing cache
- IMPORT ?= 0## Import and tag packages after build as ":local"
- RELEASE := 0## Set release version for release targets
-+TAG := latest## Tag or revision from which StageX images have been built, registry-% only
+@@ -9,6 +9,7 @@ CHECK ?= 0 ## Run build with syntax checking enabled
+ NOCACHE ?= 0 ## Run build ignoring all existing cache
+ IMPORT ?= 0 ## Import and tag packages after build as ":local"
+ RELEASE := 0 ## Set release version for release targets
++TAG := latest ## Tag or revision from which StageX images have been built, registry-% only
  
  include src/global.mk
  include src/macros.mk
