@@ -54,7 +54,7 @@ spec:
           environment:
             PROGRESS: plain
             BUILDER: "docker buildx"
-            REGISTRY_USERNAME: "${{ github.event_name == 'push' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
+            REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
             TAG: ${{ inputs.stagex_git_ref || '2025.10.0' }}
           command: registry-bootstrap-stage0
         - name: stage1
@@ -65,7 +65,7 @@ spec:
           environment:
             PROGRESS: plain
             BUILDER: "docker buildx"
-            REGISTRY_USERNAME: "${{ github.event_name == 'push' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
+            REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
             TAG: ${{ inputs.stagex_git_ref || '2025.10.0' }}
           command: registry-bootstrap-stage1
         - name: stage2
@@ -76,7 +76,7 @@ spec:
           environment:
             PROGRESS: plain
             BUILDER: "docker buildx"
-            REGISTRY_USERNAME: "${{ github.event_name == 'push' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
+            REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
             TAG: ${{ inputs.stagex_git_ref || '2025.10.0' }}
           command: registry-bootstrap-stage2
         - name: stage3
@@ -88,7 +88,7 @@ spec:
             PLATFORM: linux/amd64,linux/arm64
             PROGRESS: plain
             BUILDER: "docker buildx"
-            REGISTRY_USERNAME: "${{ github.event_name == 'push' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
+            REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
             TAG: ${{ inputs.stagex_git_ref || '2025.10.0' }}
           command: registry-bootstrap-stage3
         - name: filesystem
@@ -100,7 +100,7 @@ spec:
             PLATFORM: linux/amd64,linux/arm64
             PROGRESS: plain
             BUILDER: "docker buildx"
-            REGISTRY_USERNAME: "${{ github.event_name == 'push' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
+            REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
             TAG: ${{ inputs.stagex_git_ref || '2025.10.0' }}
           command: registry-core-filesystem
         - name: binutils
@@ -112,7 +112,7 @@ spec:
             PLATFORM: linux/amd64,linux/arm64
             PROGRESS: plain
             BUILDER: "docker buildx"
-            REGISTRY_USERNAME: "${{ github.event_name == 'push' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
+            REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
             TAG: ${{ inputs.stagex_git_ref || '2025.10.0' }}
           command: registry-core-binutils
         - name: busybox
@@ -124,7 +124,7 @@ spec:
             PLATFORM: linux/amd64,linux/arm64
             PROGRESS: plain
             BUILDER: "docker buildx"
-            REGISTRY_USERNAME: "${{ github.event_name == 'push' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
+            REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
             TAG: ${{ inputs.stagex_git_ref || '2025.10.0' }}
           command: registry-core-busybox
         - name: gcc
@@ -136,7 +136,7 @@ spec:
             PLATFORM: linux/amd64,linux/arm64
             PROGRESS: plain
             BUILDER: "docker buildx"
-            REGISTRY_USERNAME: "${{ github.event_name == 'push' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
+            REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
             TAG: ${{ inputs.stagex_git_ref || '2025.10.0' }}
           command: registry-core-gcc
         - name: make
@@ -148,7 +148,7 @@ spec:
             PLATFORM: linux/amd64,linux/arm64
             PROGRESS: plain
             BUILDER: "docker buildx"
-            REGISTRY_USERNAME: "${{ github.event_name == 'push' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
+            REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
             TAG: ${{ inputs.stagex_git_ref || '2025.10.0' }}
           command: registry-core-make
         - name: musl
@@ -160,7 +160,7 @@ spec:
             PLATFORM: linux/amd64,linux/arm64
             PROGRESS: plain
             BUILDER: "docker buildx"
-            REGISTRY_USERNAME: "${{ github.event_name == 'push' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
+            REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
             TAG: ${{ inputs.stagex_git_ref || '2025.10.0' }}
           command: registry-core-musl
         - name: diffutils
@@ -172,7 +172,7 @@ spec:
             PLATFORM: linux/amd64,linux/arm64
             PROGRESS: plain
             BUILDER: "docker buildx"
-            REGISTRY_USERNAME: "${{ github.event_name == 'push' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
+            REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
             TAG: ${{ inputs.stagex_git_ref || '2025.10.0' }}
           command: registry-core-diffutils
         - name: go
@@ -184,6 +184,6 @@ spec:
             PLATFORM: linux/amd64,linux/arm64
             PROGRESS: plain
             BUILDER: "docker buildx"
-            REGISTRY_USERNAME: "${{ github.event_name == 'push' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
+            REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
             TAG: ${{ inputs.stagex_git_ref || '2025.10.0' }}
           command: registry-core-go
