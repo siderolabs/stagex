@@ -1,15 +1,19 @@
-From f1ca5c7d43e0b851233dcee17fac17b5b0cdb998 Mon Sep 17 00:00:00 2001
+From 7885d6d2b2018503be6eff90481abcad1e6a1b47 Mon Sep 17 00:00:00 2001
 From: Dmitrii Sharshakov <d3dx12.xx@gmail.com>
 Date: Tue, 17 Feb 2026 12:56:47 +0100
 Subject: [PATCH] fix: make stage3 cross-compile for linux/arm64 again
 
+Make sure busybox is installed without calling it, split libunwind
+configure and build to make sure we transition to target-native build
+after the configure step and don't try to invoke i386 on target
+
 Fixes: 52db83a839070f3b4857d87e62697f53bc9057d7 (feat: convert entire tree to be llvm native)
 ---
- packages/bootstrap/stage3/Containerfile | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ packages/bootstrap/stage3/Containerfile | 28 +++++++++++++++++--------
+ 1 file changed, 19 insertions(+), 9 deletions(-)
 
 diff --git a/packages/bootstrap/stage3/Containerfile b/packages/bootstrap/stage3/Containerfile
-index 4157bbbd..196b03ae 100644
+index 4157bbbd..54939190 100644
 --- a/packages/bootstrap/stage3/Containerfile
 +++ b/packages/bootstrap/stage3/Containerfile
 @@ -64,11 +64,12 @@ RUN --network=none <<-EOF
@@ -30,18 +34,45 @@ index 4157bbbd..196b03ae 100644
  	rm -rf /busybox-*
  EOF
  
-@@ -371,9 +372,10 @@ RUN --network=none <<-EOF
+@@ -371,9 +372,18 @@ RUN --network=none <<-EOF
  	rm -rf /libffi-*
  EOF
  
 -FROM base AS libunwind
+-ARG TARGETARCH
++# perl and other autoconf dependencies are only in the i386 image
++# However, libunwind dependencies are in target-native images
++# To overcome this, generate the config using stage2 and copy it
++FROM base AS libunwind-configure
++ARG LIBUNWIND_VERSION
++ADD fetch/libunwind-${LIBUNWIND_VERSION}.tar.gz /
++WORKDIR /libunwind-${LIBUNWIND_VERSION}
++RUN autoreconf -i
++
 +FROM scratch AS libunwind
- ARG TARGETARCH
  ARG LIBUNWIND_VERSION
 +COPY --from=base /rootfs/ /
  COPY --from=musl /rootfs/ /
  COPY --from=busybox /rootfs/ /
  COPY --from=make /rootfs/ /
+@@ -386,15 +396,15 @@ COPY --from=zlib /rootfs/ /
+ COPY --from=libucontext /rootfs/ /
+ ADD fetch/libunwind-${LIBUNWIND_VERSION}.tar.gz /
+ WORKDIR /libunwind-${LIBUNWIND_VERSION}
++COPY --from=libunwind-configure /libunwind-${LIBUNWIND_VERSION}/ /libunwind-${LIBUNWIND_VERSION}
+ RUN <<-EOF
+ 	set -eux
+ 	export CFLAGS="-llzma -lucontext"
+ 	export CXXFLAGS="$CFLAGS"
+ 	export CPPFLAGS="$CFLAGS"
+-	autoreconf -i
++
+ 	./configure \
+ 		--prefix=/usr \
+-		--host=${TARGET} \
+ 		--enable-cxx-exceptions \
+ 		--disable-tests
+ 	make
 -- 
 2.52.0
 
