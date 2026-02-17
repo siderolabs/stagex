@@ -29,11 +29,12 @@ spec:
       steps:
         - name: Clone stagex
           nonMakeStep: true
-          command: git clone https://codeberg.org/stagex/stagex.git _out/stagex --depth 1 -b ${{ inputs.stagex_git_ref || 'staging' }}
+          command: git clone https://codeberg.org/stagex/stagex.git _out/stagex --depth 1 -b ${{ inputs.stagex_git_ref || 'staging' }} && git log -n 1
         - name: Patch stagex
           nonMakeStep: true
           command: patch -d _out/stagex -p1 < tag.patch &&
-            patch -d _out/stagex -p1 < ttl.sh.patch
+            patch -d _out/stagex -p1 < ttl.sh.patch &&
+            patch -d _out/stagex -p1 < 0001-fix-make-stage3-cross-compile-for-linux-arm64-again.patch
         - name: Download build dependencies
           nonMakeStep: true
           command: cd _out/stagex && python3 ./src/fetch.py filesystem binutils busybox gcc make musl diffutils go stage0 stage1 stage2 stage3
