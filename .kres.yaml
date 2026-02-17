@@ -35,10 +35,12 @@ spec:
           command: patch -d _out/stagex -p1 < tag.patch &&
             patch -d _out/stagex -p1 < ttl.sh.patch &&
             patch -d _out/stagex -p1 < hack.patch &&
-            patch -d _out/stagex -p1 < 0001-fix-make-stage3-cross-compile-for-linux-arm64-again.patch
+            patch -d _out/stagex -p1 < 0001-fix-make-stage3-cross-compile-for-linux-arm64-again.patch &&
+            patch -d _out/stagex -p1 < 0002-fix-targets-also-skip-empty-fetch-directories-in-reg.patch
         - name: Download build dependencies
           nonMakeStep: true
-          command: cd _out/stagex && python3 ./src/fetch.py filesystem binutils busybox gcc make musl diffutils go stage0 stage1 stage2 stage3
+          # command: cd _out/stagex && python3 ./src/fetch.py filesystem binutils busybox gcc make musl diffutils go stage0 stage1 stage2 stage3
+          command: cd _out/stagex && python3 ./src/fetch.py filesystem binutils busybox gcc make musl diffutils go stage3
         - name: login-to-registry
           conditions:
             - except-pull-request

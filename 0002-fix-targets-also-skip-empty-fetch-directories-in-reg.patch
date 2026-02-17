@@ -1,0 +1,28 @@
+From d61bf5ed3b5a5ceceb9106aac6a82c80345fa00c Mon Sep 17 00:00:00 2001
+From: Dmitrii Sharshakov <d3dx12.xx@gmail.com>
+Date: Tue, 17 Feb 2026 19:15:29 +0100
+Subject: [PATCH 2/2] fix: targets: also skip empty fetch directories in
+ registry target
+
+This fix has not previously been applied to the registry- variant
+---
+ src/targets.py | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/src/targets.py b/src/targets.py
+index dd9c0334..b009cd35 100644
+--- a/src/targets.py
++++ b/src/targets.py
+@@ -61,7 +61,8 @@ registry-{stage}-{name}:
+ \tpython3 src/fetch.py {origin} && \\
+ \t rm -rf packages/{stage}/{origin}/fetch && \\
+ \t mkdir -p packages/{stage}/{origin}/fetch && \\
+-\t cp -lR fetch/{stage}/{origin}/* packages/{stage}/{origin}/fetch && \\
++\t ( [ -z "$$(ls -A fetch/{stage}/{origin})" ] || \\
++\t   cp -lR fetch/{stage}/{origin}/* packages/{stage}/{origin}/fetch ) && \\
+ \t$(BUILDER) \\
+ \t  build \\
+ \t  --ulimit nofile=2048:16384 \\
+-- 
+2.52.0
+
