@@ -1,6 +1,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED, PLEASE DO NOT EDIT.
 #
-# Generated on 2026-02-17T11:59:21Z by kres 6458cfd.
+# Generated on 2026-02-17T12:01:28Z by kres 6458cfd.
 
 concurrency:
   group: ${{ github.head_ref || github.run_id }}
@@ -82,30 +82,6 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-      - name: stage0
-        env:
-          BUILDER: docker buildx
-          PROGRESS: plain
-          REGISTRY_USERNAME: ${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex
-          TAG: ${{ inputs.stagex_git_ref || 'staging' }}
-        run: |
-          make registry-bootstrap-stage0 -e -C _out/stagex
-      - name: stage1
-        env:
-          BUILDER: docker buildx
-          PROGRESS: plain
-          REGISTRY_USERNAME: ${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex
-          TAG: ${{ inputs.stagex_git_ref || 'staging' }}
-        run: |
-          make registry-bootstrap-stage1 -e -C _out/stagex
-      - name: stage2
-        env:
-          BUILDER: docker buildx
-          PROGRESS: plain
-          REGISTRY_USERNAME: ${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex
-          TAG: ${{ inputs.stagex_git_ref || 'staging' }}
-        run: |
-          make registry-bootstrap-stage2 -e -C _out/stagex
       - name: stage3
         env:
           BUILDER: docker buildx
