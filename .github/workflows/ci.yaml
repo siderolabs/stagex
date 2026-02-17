@@ -1,6 +1,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED, PLEASE DO NOT EDIT.
 #
-# Generated on 2026-02-17T12:01:28Z by kres 6458cfd.
+# Generated on 2026-02-17T17:40:07Z by kres 6458cfd.
 
 concurrency:
   group: ${{ github.head_ref || github.run_id }}
@@ -71,7 +71,7 @@ jobs:
           git clone https://codeberg.org/stagex/stagex.git _out/stagex --depth 1 -b ${{ inputs.stagex_git_ref || 'staging' }} && git log -n 1
       - name: Patch stagex
         run: |
-          patch -d _out/stagex -p1 < tag.patch && patch -d _out/stagex -p1 < ttl.sh.patch && patch -d _out/stagex -p1 < 0001-fix-make-stage3-cross-compile-for-linux-arm64-again.patch
+          patch -d _out/stagex -p1 < tag.patch && patch -d _out/stagex -p1 < ttl.sh.patch && patch -d _out/stagex -p1 < hack.patch && patch -d _out/stagex -p1 < 0001-fix-make-stage3-cross-compile-for-linux-arm64-again.patch
       - name: Download build dependencies
         run: |
           cd _out/stagex && python3 ./src/fetch.py filesystem binutils busybox gcc make musl diffutils go stage0 stage1 stage2 stage3

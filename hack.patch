@@ -1,0 +1,10 @@
+diff --git a/packages/bootstrap/stage3/package.toml b/packages/bootstrap/stage3/package.toml
+index 80aa9247..e7fecb92 100644
+--- a/packages/bootstrap/stage3/package.toml
++++ b/packages/bootstrap/stage3/package.toml
+@@ -116,4 +116,4 @@ version = "1.3.1"
+ hash = "9a93b2b7dfdac77ceba5a558a580e74667dd6fede4585b91eefb60f03b72df23"
+ format = "tar.gz"
+ file = "zlib-{version}.{format}"
+-mirrors = [ "https://www.zlib.net/{file}",]
++mirrors = [ "https://www.zlib.net/{file}", "https://www.zlib.net/fossils/{file}",]
