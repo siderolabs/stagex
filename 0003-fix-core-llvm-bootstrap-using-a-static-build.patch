@@ -1,0 +1,102 @@
+From d0375def47d8c2614fd2eb2e7c527a186361ab2d Mon Sep 17 00:00:00 2001
+From: Dmitrii Sharshakov <dmitry.sharshakov@siderolabs.com>
+Date: Sat, 21 Feb 2026 23:17:14 +0100
+Subject: [PATCH 3/3] fix: core-llvm: bootstrap using a static build
+
+Avoid issues with libatomic on arm64.
+
+Backport a patch fixing static linking and disable tests.
+---
+ packages/core/llvm/Containerfile              |  8 +++-
+ .../core/llvm/patches/0033-fix-static.patch   | 41 +++++++++++++++++++
+ 2 files changed, 47 insertions(+), 2 deletions(-)
+ create mode 100644 packages/core/llvm/patches/0033-fix-static.patch
+
+diff --git a/packages/core/llvm/Containerfile b/packages/core/llvm/Containerfile
+index 23c6ddbb..c28c3b13 100644
+--- a/packages/core/llvm/Containerfile
++++ b/packages/core/llvm/Containerfile
+@@ -95,6 +95,10 @@ RUN --network=none <<-EOF
+ 	cmake_cache_set LLVM_ENABLE_LIBPFM OFF
+ 	cmake_cache_set LLVM_ENABLE_ICU OFF
+ 	cmake_cache_set LLVM_ENABLE_ICONV OFF
++	cmake_cache_set CLANG_INCLUDE_TESTS OFF
++
++	# bootstrap static to avoid libatomic issues on arm64
++	cmake_cache_set LLVM_BUILD_STATIC ON
+ 
+ 	cmake_runtime_cache_set COMPILER_RT_SCUDO_STANDALONE_BUILD_SHARED OFF
+ 
+@@ -124,12 +128,10 @@ RUN --network=none <<-EOF
+ 	cmake_runtime_cache_set COMPILER_RT_BUILD_ORC OFF
+ 	cmake_runtime_cache_set COMPILER_RT_HWASAN_WITH_INTERCEPTORS OFF
+ 	cmake_runtime_cache_set LIBCXX_ENABLE_PEDANTIC OFF
+-	cmake_runtime_cache_set LIBCXX_ENABLE_STATIC OFF
+ 	cmake_runtime_cache_set LIBCXX_ENABLE_STATIC_ABI_LIBRARY OFF
+ 	cmake_runtime_cache_set LIBCXXABI_ENABLE_PEDANTIC OFF
+ 	cmake_runtime_cache_set LIBCXXABI_ENABLE_STATIC_UNWINDER OFF
+ 	cmake_runtime_cache_set LIBUNWIND_ENABLE_PEDANTIC OFF
+-	cmake_runtime_cache_set LIBUNWIND_ENABLE_STATIC OFF
+ 
+ 	cmake \
+ 		-B build \
+@@ -146,7 +148,9 @@ RUN --network=none <<-EOF
+ 		-DCLANG_ENABLE_STATIC_ANALYZER=OFF \
+ 		$CMAKE_ARGS
+ 	cmake --build build -v --parallel $(nproc)
++EOF
+ 
++RUN --network=none <<-EOF
+ 	# Remove all object files, static archives from the bootstrap to ensure they aren't further used
+ 	for object_file in $(find /usr/lib -name "*.o"); do
+ 		rm $object_file
+diff --git a/packages/core/llvm/patches/0033-fix-static.patch b/packages/core/llvm/patches/0033-fix-static.patch
+new file mode 100644
+index 00000000..fa704218
+--- /dev/null
++++ b/packages/core/llvm/patches/0033-fix-static.patch
+@@ -0,0 +1,41 @@
++From 2f86bc207af7a5bd766d4d224c30851d5ced5999 Mon Sep 17 00:00:00 2001
++From: David Spickett <david.spickett@linaro.org>
++Date: Tue, 2 Dec 2025 11:05:55 +0000
++Subject: [PATCH] [clang] Only build c-index-test and apinotes-test when clang
++ tests are included (#151157)
++
++Those programs are only used for testing, and it's used in tests that
++are already guarded by CLANG_INCLUDE_TESTS in clang/CMakeLists.txt.
++
++This change enables us to do builds with
++LLVM_INSTALL_TOOLCHAIN_ONLY=OFF, and CLANG_INCLUDE_TESTS=OFF, which
++contain the required files to build other bits of llvm-project
++standalone, but do not include those unnecessary testing programs.
++---
++ clang/tools/CMakeLists.txt | 6 ++++--
++ 1 file changed, 4 insertions(+), 2 deletions(-)
++
++diff --git a/clang/tools/CMakeLists.txt b/clang/tools/CMakeLists.txt
++index 7a7c56ae217b0..afdd613b4ee99 100644
++--- a/clang/tools/CMakeLists.txt
+++++ b/clang/tools/CMakeLists.txt
++@@ -2,7 +2,6 @@ create_subdirectory_options(CLANG TOOL)
++ 
++ add_clang_subdirectory(diagtool)
++ add_clang_subdirectory(driver)
++-add_clang_subdirectory(apinotes-test)
++ if(CLANG_ENABLE_CIR)
++   add_clang_subdirectory(cir-opt)
++   add_clang_subdirectory(cir-translate)
++@@ -22,7 +21,10 @@ if(HAVE_CLANG_REPL_SUPPORT)
++   add_clang_subdirectory(clang-repl)
++ endif()
++ 
++-add_clang_subdirectory(c-index-test)
+++if(CLANG_INCLUDE_TESTS)
+++  add_clang_subdirectory(c-index-test)
+++  add_clang_subdirectory(apinotes-test)
+++endif()
++ 
++ add_clang_subdirectory(clang-refactor)
++ # For MinGW/Cygwin we only enable shared library if LLVM_LINK_LLVM_DYLIB=ON.
+-- 
+2.53.0
+

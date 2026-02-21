@@ -29,18 +29,19 @@ spec:
       steps:
         - name: Clone stagex
           nonMakeStep: true
-          command: git clone https://codeberg.org/stagex/stagex.git _out/stagex --depth 1 -b ${{ inputs.stagex_git_ref || 'staging' }} && git log -n 1
+          command: git clone https://codeberg.org/stagex/stagex.git _out/stagex --depth 1 -b ${{ inputs.stagex_git_ref || 'staging' }} && cd _out/stagex && git log -n 1
         - name: Patch stagex
           nonMakeStep: true
           command: patch -d _out/stagex -p1 < tag.patch &&
             patch -d _out/stagex -p1 < ttl.sh.patch &&
             patch -d _out/stagex -p1 < hack.patch &&
             patch -d _out/stagex -p1 < 0001-fix-make-stage3-cross-compile-for-linux-arm64-again.patch &&
-            patch -d _out/stagex -p1 < 0002-fix-targets-also-skip-empty-fetch-directories-in-reg.patch
-        - name: Download build dependencies
-          nonMakeStep: true
-          # command: cd _out/stagex && python3 ./src/fetch.py filesystem binutils busybox gcc make musl diffutils go stage0 stage1 stage2 stage3
-          command: cd _out/stagex && python3 ./src/fetch.py filesystem binutils busybox gcc make musl diffutils go stage3
+            patch -d _out/stagex -p1 < 0002-fix-targets-also-skip-empty-fetch-directories-in-reg.patch &&
+            patch -d _out/stagex -p1 < 0003-fix-core-llvm-bootstrap-using-a-static-build.patch
+        # - name: Download build dependencies
+        #   nonMakeStep: true
+        #   # command: cd _out/stagex && python3 ./src/fetch.py stage0 stage1 stage2 stage3
+        #   command: cd _out/stagex && python3 ./src/fetch.py filesystem go mimalloc musl llvm libzstd busybox make zlib pkgconf samurai linux-headers perl openssl cmake attr libucontext onetbb mold binutils diffutils
         - name: login-to-registry
           conditions:
             - except-pull-request
@@ -307,19 +308,7 @@ spec:
             REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
             TAG: ${{ inputs.stagex_git_ref || 'staging' }}
           command: registry-core-onetbb
-        - name: 
-          arguments:
-            - -e
-            - -C
-            - _out/stagex
-          environment:
-            PLATFORM: linux/amd64,linux/arm64
-            PROGRESS: plain
-            BUILDER: "docker buildx"
-            REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
-            TAG: ${{ inputs.stagex_git_ref || 'staging' }}
-          command: registry-core-mold
-        - name: 
+        - name: mold
           arguments:
             - -e
             - -C

@@ -1,7 +1,7 @@
-From d61bf5ed3b5a5ceceb9106aac6a82c80345fa00c Mon Sep 17 00:00:00 2001
+From c6fd107b2c754e0ecc5134d642e49180872048e8 Mon Sep 17 00:00:00 2001
 From: Dmitrii Sharshakov <d3dx12.xx@gmail.com>
 Date: Tue, 17 Feb 2026 19:15:29 +0100
-Subject: [PATCH 2/2] fix: targets: also skip empty fetch directories in
+Subject: [PATCH 2/3] fix: targets: also skip empty fetch directories in
  registry target
 
 This fix has not previously been applied to the registry- variant
@@ -24,5 +24,5 @@ index dd9c0334..b009cd35 100644
  \t  build \\
  \t  --ulimit nofile=2048:16384 \\
 -- 
-2.52.0
+2.53.0
 
