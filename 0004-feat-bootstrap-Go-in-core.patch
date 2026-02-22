@@ -1,0 +1,365 @@
+From 475912fddfa053bcc5cf3683b75fb4dbd9069dec Mon Sep 17 00:00:00 2001
+From: Dmitrii Sharshakov <d3dx12.xx@gmail.com>
+Date: Sun, 22 Feb 2026 15:10:43 +0100
+Subject: [PATCH 4/4] feat: bootstrap Go in core
+
+Remove Go from the bootstrap path, as it can be independently
+bootstrapped from stage1 (+core-filesystem for packaging).
+
+Go is bootstrapped from stage1, because it must be bootstrapped on
+i386 or amd64, as arm64 has only been added in Go 1.9.
+---
+ packages/bootstrap/stage1/Containerfile | 124 ------------------------
+ packages/bootstrap/stage1/package.toml  |  21 ----
+ packages/bootstrap/stage3/Containerfile |  21 ----
+ packages/bootstrap/stage3/package.toml  |   5 -
+ packages/core/go/Containerfile          |  73 ++++++++++++--
+ packages/core/go/package.toml           |  26 +++++
+ 6 files changed, 93 insertions(+), 177 deletions(-)
+
+diff --git a/packages/bootstrap/stage1/Containerfile b/packages/bootstrap/stage1/Containerfile
+index 5876d35d..bda7a6c4 100644
+--- a/packages/bootstrap/stage1/Containerfile
++++ b/packages/bootstrap/stage1/Containerfile
+@@ -207,130 +207,6 @@ RUN build automake-1.15.1 pass1.sh
+ RUN build binutils-2.30 pass1.sh
+ RUN build musl-1.1.24 pass3.sh
+ RUN build tcc-0.9.27 pass5.sh
+-
+-# Fix to make copying Go toolchain files work
+-COPY copy-escape.patch /steps/
+-RUN ["bash", "-c", "patch -p1 < copy-escape.patch"]
+-
+-COPY --chmod=644 <<-EOF go-1.4/pass1.sh
+-	src_compile() {
+-		cd src
+-		CC=tcc \\
+-		GOHOSTARCH=386 \\
+-		GOROOT="${PREFIX}/lib/go" \\
+-		GOROOT_FINAL="${PREFIX}/lib/go" \\
+-		GOBIN="${PREFIX}/lib/go/bin" \\
+-		bash -- make.bash -v=1 -d
+-		cd ..
+-	}
+-
+-	src_install() {
+-		mkdir -p ${DESTDIR}${PREFIX}/lib/go
+-
+-		rm -rf src/testdata
+-
+-		cp -a bin lib pkg src ${DESTDIR}${PREFIX}/lib/go
+-	}
+-EOF
+-COPY --chmod=644 <<-EOF go-1.4/sources
+-	go1.4.src.tar.gz f4ff5b5eb3a3cae1c993723f3eab519c5bae18866b5e5f96fe1102f0cb5c3e52
+-EOF
+-RUN build go-1.4 pass1.sh
+-
+-COPY --chmod=644 <<-EOF go-1.19/pass1.sh
+-	src_compile() {
+-		cd src
+-		CGO_ENABLED=0 \\
+-		GOHOSTARCH=386 \\
+-		GOROOT_BOOTSTRAP=${PREFIX}/lib/go \\
+-		GOROOT_FINAL=${PREFIX}/lib/go \\
+-		bash -- make.bash -v=1 -d
+-		cd ..
+-	}
+-
+-	src_install() {
+-		# Remove previous Go version, removing from / also required
+-		rm -rf ${PREFIX}/lib/go
+-		rm -rf ${DESTDIR}${PREFIX}/lib/go
+-		rm -rf ${DESTDIR}/tmp
+-		mkdir -p ${DESTDIR}${PREFIX}/lib/go
+-
+-		# Remove paths that contain special files
+-		# that fail to copy
+-		rm -rf src/testdata
+-		rm -rf src/cmd/go/testdata
+-
+-		cp -a bin lib pkg src ${DESTDIR}${PREFIX}/lib/go
+-	}
+-EOF
+-COPY --chmod=644 <<-EOF go-1.19/sources
+-	go1.19.11.src.tar.gz e25c9ab72d811142b7f41ff6da5165fec2d1be5feec3ef2c66bc0bdecb431489
+-EOF
+-RUN build go-1.19 pass1.sh
+-
+-COPY --chmod=644 <<-EOF go-1.20/pass1.sh
+-	src_compile() {
+-		cd src
+-		CGO_ENABLED=0 \\
+-		GOHOSTARCH=386 \\
+-		GOROOT_BOOTSTRAP=${PREFIX}/lib/go \\
+-		GOROOT_FINAL=${PREFIX}/lib/go \\
+-		bash -- make.bash -v=1 -d
+-		rm -rf /tmp/.cache /tmp/.config
+-		cd ..
+-	}
+-
+-	src_install() {
+-		# Remove previous Go version, removing from / also required
+-		rm -rf ${PREFIX}/lib/go
+-		rm -rf ${DESTDIR}${PREFIX}/lib/go
+-		rm -rf ${DESTDIR}/tmp
+-		mkdir -p ${DESTDIR}${PREFIX}/lib/go
+-
+-		# Remove paths that contain special files
+-		# that fail to copy
+-		rm -rf src/testdata
+-		rm -rf src/cmd/go/testdata
+-
+-		cp -a bin lib pkg src ${DESTDIR}${PREFIX}/lib/go
+-	}
+-EOF
+-COPY --chmod=644 <<-EOF go-1.20/sources
+-	go1.20.6.src.tar.gz 62ee5bc6fb55b8bae8f705e0cb8df86d6453626b4ecf93279e2867092e0b7f70
+-EOF
+-RUN build go-1.20 pass1.sh
+-
+-COPY --chmod=644 <<-EOF go/pass1.sh
+-	src_compile() {
+-		cd src
+-		GOHOSTARCH=386 \\
+-		GOROOT_BOOTSTRAP=${PREFIX}/lib/go \\
+-		GOROOT_FINAL=${PREFIX}/lib/go \\
+-		bash -- make.bash -v=1 -d
+-		rm -rf /tmp/.cache /tmp/.config
+-		cd ..
+-	}
+-
+-	src_install() {
+-		# Remove previous Go version, removing from / also required
+-		rm -rf ${PREFIX}/lib/go
+-		rm -rf ${DESTDIR}${PREFIX}/lib/go
+-		rm -rf ${DESTDIR}/tmp
+-		mkdir -p ${DESTDIR}${PREFIX}/lib/go
+-
+-		# Remove paths that contain special files
+-		# that fail to copy
+-		rm -rf src/testdata
+-		rm -rf src/cmd/go/testdata
+-
+-		cp -a bin lib pkg src ${DESTDIR}${PREFIX}/lib/go
+-	}
+-EOF
+-COPY --chmod=644 <<-EOF go/sources
+-	go1.23.5.src.tar.gz a6f3f4bbd3e6bdd626f79b668f212fbb5649daf75084fb79b678a0ae4d97423b
+-EOF
+-RUN build go pass1.sh
+-
+ RUN build gcc-4.0.4 pass1.sh
+ RUN build findutils-4.2.33 pass1.sh
+ RUN build musl-1.2.4 pass1.sh
+diff --git a/packages/bootstrap/stage1/package.toml b/packages/bootstrap/stage1/package.toml
+index 82110cc3..72638845 100644
+--- a/packages/bootstrap/stage1/package.toml
++++ b/packages/bootstrap/stage1/package.toml
+@@ -1631,24 +1631,3 @@ mirrors = [
+   "https://ftpmirror.gnu.org/gnu/automake/{file}",
+   "https://mirrors.kernel.org/gnu/automake/{file}",
+ ]
+-
+-[sources.go1_4]
+-hash = "f4ff5b5eb3a3cae1c993723f3eab519c5bae18866b5e5f96fe1102f0cb5c3e52"
+-version = "1.4"
+-file = "go{version}.src.tar.gz"
+-mirrors = ["https://dl.google.com/go/go{version}-bootstrap-20171003.tar.gz"]
+-
+-[sources.go1_19_11]
+-hash = "e25c9ab72d811142b7f41ff6da5165fec2d1be5feec3ef2c66bc0bdecb431489"
+-version = "1.19.11"
+-mirrors = ["https://go.dev/dl/go{version}.src.tar.gz"]
+-
+-[sources.go1_20_6]
+-hash = "62ee5bc6fb55b8bae8f705e0cb8df86d6453626b4ecf93279e2867092e0b7f70"
+-version = "1.20.6"
+-mirrors = ["https://go.dev/dl/go{version}.src.tar.gz"]
+-
+-[sources.go]
+-hash = "a6f3f4bbd3e6bdd626f79b668f212fbb5649daf75084fb79b678a0ae4d97423b"
+-version = "1.23.5"
+-mirrors = ["https://go.dev/dl/go{version}.src.tar.gz"]
+diff --git a/packages/bootstrap/stage3/Containerfile b/packages/bootstrap/stage3/Containerfile
+index 54939190..f57fb701 100644
+--- a/packages/bootstrap/stage3/Containerfile
++++ b/packages/bootstrap/stage3/Containerfile
+@@ -90,26 +90,6 @@ RUN --network=none <<-EOF
+ 	rm -rf /linux-*
+ EOF
+ 
+-FROM base AS go
+-ARG TARGETARCH
+-ARG GO_VERSION
+-ADD fetch/go${GO_VERSION}.src.tar.gz /
+-WORKDIR /go
+-RUN --network=none <<-EOF
+-	export GOROOT_BOOTSTRAP=/usr/lib/go
+-	export GOHOSTARCH=386
+-  export GOARCH=${TARGETARCH}
+-	env -C src bash -- make.bash
+-	rm -rf src/testdata
+-	mv bin/linux_${TARGETARCH}/* bin
+-	rm -rf bin/linux_${TARGETARCH}
+-	mkdir -p /rootfs/usr/lib/go /rootfs/usr/bin
+-	cp -a bin lib pkg src /rootfs/usr/lib/go
+-	ln -s /usr/lib/go/bin/go /rootfs/usr/bin/go
+-	ln -s /usr/lib/go/bin/gofmt /rootfs/usr/bin/gofmt
+-	rm -rf /go
+-EOF
+-
+ FROM base AS binutils
+ ARG TARGETARCH
+ ARG BINUTILS_VERSION
+@@ -422,7 +402,6 @@ COPY --from=musl /rootfs/ /
+ COPY --from=gcc /rootfs/ /
+ COPY --from=binutils /rootfs/ /
+ COPY --from=python /rootfs/ /
+-COPY --from=go /rootfs/ /
+ COPY --from=cmake /rootfs/ /
+ COPY --from=linux-headers /rootfs/ /
+ COPY --from=libffi /rootfs/ /
+diff --git a/packages/bootstrap/stage3/package.toml b/packages/bootstrap/stage3/package.toml
+index 977de709..2882ec3a 100644
+--- a/packages/bootstrap/stage3/package.toml
++++ b/packages/bootstrap/stage3/package.toml
+@@ -62,11 +62,6 @@ hash = "581f4d4e872da74b3941c874215898a7d35802f03732bdccee1d4a7979105d18"
+ file = "make-{version}.tar.gz"
+ mirrors = ["https://ftpmirror.gnu.org/gnu/make/{file}", "https://mirrors.kernel.org/gnu/make/{file}"]
+ 
+-[sources.go]
+-hash = "e1cb5582aab588668bc04c07de18688070f6b8c9b2aaf361f821e19bd47cfdbd"
+-version = "1.24.6"
+-mirrors = ["https://go.dev/dl/go{version}.src.tar.gz"]
+-
+ [sources.cmake]
+ version = "3.31.5"
+ hash = "66fb53a145648be56b46fa9e8ccade3a4d0dfc92e401e52ce76bdad1fea43d27"
+diff --git a/packages/core/go/Containerfile b/packages/core/go/Containerfile
+index 2f0be734..e3491efc 100644
+--- a/packages/core/go/Containerfile
++++ b/packages/core/go/Containerfile
+@@ -1,15 +1,76 @@
+-FROM scratch AS build
++# Go only supports targeting arm64 from version 1.9
++# This requires bootstrapping on 386/amd64 host
++FROM --platform=linux/386 stagex/bootstrap-stage1 AS base
++
++# Go bootstrapping is described by this order:
++# C -> 1.4 -> 1.19 -> 1.20 -> steps of +2 -> current version
++# Here, the last step (building current from last bootstrap) is also cross-compiling to the target arch
++
++FROM base AS build
++ADD fetch/go1.4.src.tar.gz /go1_4
++WORKDIR /go1_4/go
++ENV GOHOSTARCH=386
++RUN --network=none <<-EOF
++	mkdir -p /var/tmp
++
++	set -eux
++	cd src
++	bash -- make.bash -v=1 -d
++EOF
++
++ADD fetch/go1.19.11.src.tar.gz /go1_19_11
++WORKDIR /go1_19_11/go
++ENV GOROOT_BOOTSTRAP=/go1_4/go
++RUN --network=none <<-EOF
++	set -eux
++	cd src
++	bash -- make.bash -v=1 -d
++EOF
++
++ADD fetch/go1.20.6.src.tar.gz /go1_20_6
++WORKDIR /go1_20_6/go
++ENV GOROOT_BOOTSTRAP=/go1_19_11/go
++RUN --network=none <<-EOF
++	set -eux
++	cd src
++	bash -- make.bash -v=1 -d
++EOF
++
++ADD fetch/go1.22.12.src.tar.gz /go1_22_12
++WORKDIR /go1_22_12/go
++ENV GOROOT_BOOTSTRAP=/go1_20_6/go
++RUN --network=none <<-EOF
++	set -eux
++	cd src
++	bash -- make.bash -v=1 -d
++EOF
++
++ADD fetch/go1.24.6.src.tar.gz /go1_24_6
++WORKDIR /go1_24_6/go
++ENV GOROOT_BOOTSTRAP=/go1_22_12/go
++RUN --network=none <<-EOF
++	set -eux
++	cd src
++	bash -- make.bash -v=1 -d
++EOF
++
+ ARG VERSION
+-COPY --from=stagex/bootstrap-stage3 . /
+-ADD fetch/go${VERSION}.src.tar.gz .
++ARG TARGETARCH
++ADD fetch/go${VERSION}.src.tar.gz /
+ WORKDIR /go
+-ENV GOROOT_BOOTSTRAP=/usr/lib/go
++ENV GOROOT_BOOTSTRAP=/go1_24_6/go
++ENV GOARCH=${TARGETARCH}
+ RUN --network=none <<-EOF
+ 	set -eux
+ 	cd src
+-	sh make.bash
+-	cd ..
++	bash -- make.bash -v=1 -d
++EOF
++
++RUN --network=none <<-EOF
++	set -eux
+ 	mkdir -p /rootfs/usr/lib/go
++	mv bin/linux_${TARGETARCH}/* bin
++	rm -rf bin/linux_386 bin/linux_${TARGETARCH}
+ 	cp -a bin lib pkg src /rootfs/usr/lib/go
+ 	mkdir -p /rootfs/usr/bin
+ 	ln -s /usr/lib/go/bin/go /rootfs/usr/bin/go
+diff --git a/packages/core/go/package.toml b/packages/core/go/package.toml
+index 1bf30254..e6b6db35 100644
+--- a/packages/core/go/package.toml
++++ b/packages/core/go/package.toml
+@@ -5,6 +5,32 @@ description = "The Go programming language"
+ website = "https://go.dev"
+ licenses = "BSD-3-Clause"
+ 
++[sources.go1_4]
++hash = "f4ff5b5eb3a3cae1c993723f3eab519c5bae18866b5e5f96fe1102f0cb5c3e52"
++version = "1.4"
++file = "go{version}.src.tar.gz"
++mirrors = ["https://dl.google.com/go/go{version}-bootstrap-20171003.tar.gz"]
++
++[sources.go1_19_11]
++hash = "e25c9ab72d811142b7f41ff6da5165fec2d1be5feec3ef2c66bc0bdecb431489"
++version = "1.19.11"
++mirrors = ["https://go.dev/dl/go{version}.src.tar.gz"]
++
++[sources.go1_20_6]
++hash = "62ee5bc6fb55b8bae8f705e0cb8df86d6453626b4ecf93279e2867092e0b7f70"
++version = "1.20.6"
++mirrors = ["https://go.dev/dl/go{version}.src.tar.gz"]
++
++[sources.go1_22_12]
++hash = "012a7e1f37f362c0918c1dfa3334458ac2da1628c4b9cf4d9ca02db986e17d71"
++version = "1.22.12"
++mirrors = ["https://go.dev/dl/go{version}.src.tar.gz"]
++
++[sources.go1_24_6]
++hash = "e1cb5582aab588668bc04c07de18688070f6b8c9b2aaf361f821e19bd47cfdbd"
++version = "1.24.6"
++mirrors = ["https://go.dev/dl/go{version}.src.tar.gz"]
++
+ [sources.go]
+ hash = "c9132a8a1f6bd2aa4aad1d74b8231d95274950483a4950657ee6c56e6e817790"
+ mirrors = ["https://go.dev/dl/go{version}.src.tar.gz"]
+-- 
+2.53.0
+

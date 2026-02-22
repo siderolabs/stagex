@@ -1,7 +1,7 @@
 From d0375def47d8c2614fd2eb2e7c527a186361ab2d Mon Sep 17 00:00:00 2001
 From: Dmitrii Sharshakov <dmitry.sharshakov@siderolabs.com>
 Date: Sat, 21 Feb 2026 23:17:14 +0100
-Subject: [PATCH 3/3] fix: core-llvm: bootstrap using a static build
+Subject: [PATCH 3/4] fix: core-llvm: bootstrap using a static build
 
 Avoid issues with libatomic on arm64.
 
