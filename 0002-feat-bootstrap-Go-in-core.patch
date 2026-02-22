@@ -1,7 +1,7 @@
-From 475912fddfa053bcc5cf3683b75fb4dbd9069dec Mon Sep 17 00:00:00 2001
+From 0baf0b5b51a9857117c690c1f53aa855a7ff07a4 Mon Sep 17 00:00:00 2001
 From: Dmitrii Sharshakov <d3dx12.xx@gmail.com>
 Date: Sun, 22 Feb 2026 15:10:43 +0100
-Subject: [PATCH 4/4] feat: bootstrap Go in core
+Subject: [PATCH 2/4] feat: bootstrap Go in core
 
 Remove Go from the bootstrap path, as it can be independently
 bootstrapped from stage1 (+core-filesystem for packaging).
@@ -9,13 +9,15 @@ bootstrapped from stage1 (+core-filesystem for packaging).
 Go is bootstrapped from stage1, because it must be bootstrapped on
 i386 or amd64, as arm64 has only been added in Go 1.9.
 ---
- packages/bootstrap/stage1/Containerfile | 124 ------------------------
- packages/bootstrap/stage1/package.toml  |  21 ----
- packages/bootstrap/stage3/Containerfile |  21 ----
- packages/bootstrap/stage3/package.toml  |   5 -
- packages/core/go/Containerfile          |  73 ++++++++++++--
- packages/core/go/package.toml           |  26 +++++
- 6 files changed, 93 insertions(+), 177 deletions(-)
+ packages/bootstrap/stage1/Containerfile     | 124 --------------------
+ packages/bootstrap/stage1/copy-escape.patch |  22 ----
+ packages/bootstrap/stage1/package.toml      |  21 ----
+ packages/bootstrap/stage3/Containerfile     |  21 ----
+ packages/bootstrap/stage3/package.toml      |   5 -
+ packages/core/go/Containerfile              |  73 +++++++++++-
+ packages/core/go/package.toml               |  26 ++++
+ 7 files changed, 93 insertions(+), 199 deletions(-)
+ delete mode 100644 packages/bootstrap/stage1/copy-escape.patch
 
 diff --git a/packages/bootstrap/stage1/Containerfile b/packages/bootstrap/stage1/Containerfile
 index 5876d35d..bda7a6c4 100644
@@ -152,6 +154,34 @@ index 5876d35d..bda7a6c4 100644
  RUN build gcc-4.0.4 pass1.sh
  RUN build findutils-4.2.33 pass1.sh
  RUN build musl-1.2.4 pass1.sh
+diff --git a/packages/bootstrap/stage1/copy-escape.patch b/packages/bootstrap/stage1/copy-escape.patch
+deleted file mode 100644
+index b8a8fc25..00000000
+--- a/packages/bootstrap/stage1/copy-escape.patch
++++ /dev/null
+@@ -1,22 +0,0 @@
+-diff --git a/helpers.sh b/helpers.sh
+-index ea2cc05..3429e61 100755
+---- a/helpers.sh
+-+++ b/helpers.sh
+-@@ -32,7 +32,7 @@ _get_files() {
+-         # Archive symlinks to directories as symlinks
+-         echo "${prefix}/${f}"
+-         if [ -d "${f}" ] && ! [ -h "${f}" ]; then
+--            cd "${f}"
+-+            cd -- "${f}"
+-             _get_files "${prefix}/${f}"
+-             cd ..
+-         fi
+-@@ -56,7 +56,7 @@ reset_timestamp() {
+-         for f in ${fs}; do
+-             touch -h -t 197001010000.00 "${f}"
+-             if [ -d "${f}" ]; then
+--                cd "${f}"
+-+                cd -- "${f}"
+-                 reset_timestamp
+-                 cd ..
+-             fi
 diff --git a/packages/bootstrap/stage1/package.toml b/packages/bootstrap/stage1/package.toml
 index 82110cc3..72638845 100644
 --- a/packages/bootstrap/stage1/package.toml
@@ -182,10 +212,10 @@ index 82110cc3..72638845 100644
 -version = "1.23.5"
 -mirrors = ["https://go.dev/dl/go{version}.src.tar.gz"]
 diff --git a/packages/bootstrap/stage3/Containerfile b/packages/bootstrap/stage3/Containerfile
-index 54939190..f57fb701 100644
+index 4157bbbd..4968ef76 100644
 --- a/packages/bootstrap/stage3/Containerfile
 +++ b/packages/bootstrap/stage3/Containerfile
-@@ -90,26 +90,6 @@ RUN --network=none <<-EOF
+@@ -89,26 +89,6 @@ RUN --network=none <<-EOF
  	rm -rf /linux-*
  EOF
  
@@ -212,7 +242,7 @@ index 54939190..f57fb701 100644
  FROM base AS binutils
  ARG TARGETARCH
  ARG BINUTILS_VERSION
-@@ -422,7 +402,6 @@ COPY --from=musl /rootfs/ /
+@@ -412,7 +392,6 @@ COPY --from=musl /rootfs/ /
  COPY --from=gcc /rootfs/ /
  COPY --from=binutils /rootfs/ /
  COPY --from=python /rootfs/ /

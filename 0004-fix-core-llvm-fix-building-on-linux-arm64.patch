@@ -1,0 +1,53 @@
+From f70746dd847d8e7a06d649223e30dad398edb53c Mon Sep 17 00:00:00 2001
+From: Dmitrii Sharshakov <dmitry.sharshakov@siderolabs.com>
+Date: Sun, 22 Feb 2026 20:50:57 +0100
+Subject: [PATCH 4/4] fix: core-llvm: fix building on linux/arm64
+
+Fix libatomic options, skip removing NSan on unsupported platforms
+---
+ packages/core/llvm/Containerfile | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/packages/core/llvm/Containerfile b/packages/core/llvm/Containerfile
+index 23c6ddbb..95334d6a 100644
+--- a/packages/core/llvm/Containerfile
++++ b/packages/core/llvm/Containerfile
+@@ -146,7 +146,9 @@ RUN --network=none <<-EOF
+ 		-DCLANG_ENABLE_STATIC_ANALYZER=OFF \
+ 		$CMAKE_ARGS
+ 	cmake --build build -v --parallel $(nproc)
++EOF
+ 
++RUN --network=none <<-EOF
+ 	# Remove all object files, static archives from the bootstrap to ensure they aren't further used
+ 	for object_file in $(find /usr/lib -name "*.o"); do
+ 		rm $object_file
+@@ -167,9 +169,14 @@ RUN --network=none <<-EOF
+ 	export LIBCC="/usr/lib/clang/21/lib/${TARGET}/libclang_rt.builtins.a"
+ 
+ 	# Build LLVM's `atomic.c` into `libatomic.so`
++	LIBATOMIC_CFLAGS=""
++	# Outlined atomics are enabled by default and break linking with libatomic.so
++	# TODO: ideally investigate deeper (might need to change defaults and unify value of this option across the environment)
++	[[ "$TARGETARCH" == "arm64" ]] && LIBATOMIC_CFLAGS="-mno-outline-atomics"
++
+ 	mkdir build-libatomic
+ 	cd build-libatomic
+-	clang -std=c99 -fPIC -O2 -c -o atomic.o ../compiler-rt/lib/builtins/atomic.c
++	clang $LIBATOMIC_CFLAGS -std=c99 -fPIC -O2 -c -o atomic.o ../compiler-rt/lib/builtins/atomic.c
+ 	rm -rf /usr/lib/libatomic*
+ 	ar rcs /usr/lib/libatomic.a atomic.o
+ 	ld.lld --shared -o /usr/lib/libatomic.so atomic.o
+@@ -245,7 +252,8 @@ RUN --network=none <<-EOF
+ 
+ 	# NSan, for whatever reason, is not being reproducibly built. It's removed here as it
+ 	# _should_ be unpopular and not a blocker, but ideally this would be solved (TODO).
+-	rm /rootfs/usr/lib/clang/21/lib/${TARGET}/libclang_rt.nsan*
++	# It is built only for some platforms, -f to avoid failing when missing.
++	rm -f /rootfs/usr/lib/clang/21/lib/${TARGET}/libclang_rt.nsan*
+ EOF
+ 
+ RUN --network=none <<-EOF
+-- 
+2.53.0
+

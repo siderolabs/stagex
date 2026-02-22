@@ -1,6 +1,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED, PLEASE DO NOT EDIT.
 #
-# Generated on 2026-02-22T14:21:07Z by kres 6458cfd.
+# Generated on 2026-02-22T19:58:24Z by kres 6458cfd.
 
 concurrency:
   group: ${{ github.head_ref || github.run_id }}
@@ -71,7 +71,7 @@ jobs:
           git clone https://codeberg.org/stagex/stagex.git _out/stagex --depth 1 -b ${{ inputs.stagex_git_ref || 'staging' }} && cd _out/stagex && git log -n 1
       - name: Patch stagex
         run: |
-          patch -d _out/stagex -p1 < tag.patch && patch -d _out/stagex -p1 < ttl.sh.patch && patch -d _out/stagex -p1 < 0001-fix-make-stage3-cross-compile-for-linux-arm64-again.patch && patch -d _out/stagex -p1 < 0002-fix-targets-also-skip-empty-fetch-directories-in-reg.patch && patch -d _out/stagex -p1 < 0003-fix-core-llvm-bootstrap-using-a-static-build.patch && patch -d _out/stagex -p1 < 0004-feat-bootstrap-Go-in-core.patch
+          patch -d _out/stagex -p1 < tag.patch && patch -d _out/stagex -p1 < ttl.sh.patch && patch -d _out/stagex -p1 < 0001-fix-targets-also-skip-empty-fetch-directories-in-reg.patch && patch -d _out/stagex -p1 < 0002-feat-bootstrap-Go-in-core.patch && patch -d _out/stagex -p1 < 0003-fix-make-stage3-cross-compile-for-linux-arm64-again.patch && patch -d _out/stagex -p1 < 0004-fix-core-llvm-fix-building-on-linux-arm64.patch
       - name: login-to-registry
         if: github.event_name != 'pull_request'
         uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # version: v3.7.0

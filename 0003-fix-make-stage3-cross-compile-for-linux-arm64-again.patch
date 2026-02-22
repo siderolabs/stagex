@@ -1,7 +1,7 @@
-From ad6a524716c969ca7395622f335f4d5bb932f027 Mon Sep 17 00:00:00 2001
-From: Dmitrii Sharshakov <d3dx12.xx@gmail.com>
+From c94a4f58836f869cd4c0cd783b0192d1e03a1f8d Mon Sep 17 00:00:00 2001
+From: Dmitrii Sharshakov <dmitry.sharshakov@siderolabs.com>
 Date: Tue, 17 Feb 2026 12:56:47 +0100
-Subject: [PATCH 1/4] fix: make stage3 cross-compile for linux/arm64 again
+Subject: [PATCH 3/4] fix: make stage3 cross-compile for linux/arm64 again
 
 Make sure busybox is installed without calling it, split libunwind
 configure and build to make sure we transition to target-native build
@@ -13,7 +13,7 @@ Fixes: 52db83a839070f3b4857d87e62697f53bc9057d7 (feat: convert entire tree to be
  1 file changed, 19 insertions(+), 9 deletions(-)
 
 diff --git a/packages/bootstrap/stage3/Containerfile b/packages/bootstrap/stage3/Containerfile
-index 4157bbbd..54939190 100644
+index 4968ef76..f57fb701 100644
 --- a/packages/bootstrap/stage3/Containerfile
 +++ b/packages/bootstrap/stage3/Containerfile
 @@ -64,11 +64,12 @@ RUN --network=none <<-EOF
@@ -34,7 +34,7 @@ index 4157bbbd..54939190 100644
  	rm -rf /busybox-*
  EOF
  
-@@ -371,9 +372,18 @@ RUN --network=none <<-EOF
+@@ -351,9 +352,18 @@ RUN --network=none <<-EOF
  	rm -rf /libffi-*
  EOF
  
@@ -55,7 +55,7 @@ index 4157bbbd..54939190 100644
  COPY --from=musl /rootfs/ /
  COPY --from=busybox /rootfs/ /
  COPY --from=make /rootfs/ /
-@@ -386,15 +396,15 @@ COPY --from=zlib /rootfs/ /
+@@ -366,15 +376,15 @@ COPY --from=zlib /rootfs/ /
  COPY --from=libucontext /rootfs/ /
  ADD fetch/libunwind-${LIBUNWIND_VERSION}.tar.gz /
  WORKDIR /libunwind-${LIBUNWIND_VERSION}
