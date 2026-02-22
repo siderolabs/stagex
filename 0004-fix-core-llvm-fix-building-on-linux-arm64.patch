@@ -1,7 +1,7 @@
 From f70746dd847d8e7a06d649223e30dad398edb53c Mon Sep 17 00:00:00 2001
 From: Dmitrii Sharshakov <dmitry.sharshakov@siderolabs.com>
 Date: Sun, 22 Feb 2026 20:50:57 +0100
-Subject: [PATCH 4/4] fix: core-llvm: fix building on linux/arm64
+Subject: [PATCH 4/5] fix: core-llvm: fix building on linux/arm64
 
 Fix libatomic options, skip removing NSan on unsupported platforms
 ---

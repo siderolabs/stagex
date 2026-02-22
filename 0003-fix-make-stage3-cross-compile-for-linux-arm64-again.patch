@@ -1,7 +1,7 @@
 From c94a4f58836f869cd4c0cd783b0192d1e03a1f8d Mon Sep 17 00:00:00 2001
 From: Dmitrii Sharshakov <dmitry.sharshakov@siderolabs.com>
 Date: Tue, 17 Feb 2026 12:56:47 +0100
-Subject: [PATCH 3/4] fix: make stage3 cross-compile for linux/arm64 again
+Subject: [PATCH 3/5] fix: make stage3 cross-compile for linux/arm64 again
 
 Make sure busybox is installed without calling it, split libunwind
 configure and build to make sure we transition to target-native build

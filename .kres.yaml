@@ -37,7 +37,8 @@ spec:
             patch -d _out/stagex -p1 < 0001-fix-targets-also-skip-empty-fetch-directories-in-reg.patch &&
             patch -d _out/stagex -p1 < 0002-feat-bootstrap-Go-in-core.patch &&
             patch -d _out/stagex -p1 < 0003-fix-make-stage3-cross-compile-for-linux-arm64-again.patch &&
-            patch -d _out/stagex -p1 < 0004-fix-core-llvm-fix-building-on-linux-arm64.patch
+            patch -d _out/stagex -p1 < 0004-fix-core-llvm-fix-building-on-linux-arm64.patch &&
+            patch -d _out/stagex -p1 < 0005-fix-core-zlib-add-fossils-as-a-mirror.patch
         # - name: Download build dependencies
         #   nonMakeStep: true
         #   # command: cd _out/stagex && python3 ./src/fetch.py stage0 stage1 stage2 stage3
@@ -47,51 +48,51 @@ spec:
             - except-pull-request
           registryLoginStep:
             registry: ghcr.io
-        - name: stage0
-          arguments:
-            - -e
-            - -C
-            - _out/stagex
-          environment:
-            PROGRESS: plain
-            BUILDER: "docker buildx"
-            REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
-            TAG: ${{ inputs.stagex_git_ref || 'staging' }}
-          command: registry-bootstrap-stage0
-        - name: stage1
-          arguments:
-            - -e
-            - -C
-            - _out/stagex
-          environment:
-            PROGRESS: plain
-            BUILDER: "docker buildx"
-            REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
-            TAG: ${{ inputs.stagex_git_ref || 'staging' }}
-          command: registry-bootstrap-stage1
-        - name: stage2
-          arguments:
-            - -e
-            - -C
-            - _out/stagex
-          environment:
-            PROGRESS: plain
-            BUILDER: "docker buildx"
-            REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
-            TAG: ${{ inputs.stagex_git_ref || 'staging' }}
-          command: registry-bootstrap-stage2
-        - name: stage3
-          arguments:
-            - -e
-            - -C
-            - _out/stagex
-          environment:
-            PLATFORM: linux/amd64,linux/arm64
-            PROGRESS: plain
-            BUILDER: "docker buildx"
-            REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
-            TAG: ${{ inputs.stagex_git_ref || 'staging' }}
-          command: registry-bootstrap-stage3
+        # - name: stage0
+        #   arguments:
+        #     - -e
+        #     - -C
+        #     - _out/stagex
+        #   environment:
+        #     PROGRESS: plain
+        #     BUILDER: "docker buildx"
+        #     REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
+        #     TAG: ${{ inputs.stagex_git_ref || 'staging' }}
+        #   command: registry-bootstrap-stage0
+        # - name: stage1
+        #   arguments:
+        #     - -e
+        #     - -C
+        #     - _out/stagex
+        #   environment:
+        #     PROGRESS: plain
+        #     BUILDER: "docker buildx"
+        #     REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
+        #     TAG: ${{ inputs.stagex_git_ref || 'staging' }}
+        #   command: registry-bootstrap-stage1
+        # - name: stage2
+        #   arguments:
+        #     - -e
+        #     - -C
+        #     - _out/stagex
+        #   environment:
+        #     PROGRESS: plain
+        #     BUILDER: "docker buildx"
+        #     REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
+        #     TAG: ${{ inputs.stagex_git_ref || 'staging' }}
+        #   command: registry-bootstrap-stage2
+        # - name: stage3
+        #   arguments:
+        #     - -e
+        #     - -C
+        #     - _out/stagex
+        #   environment:
+        #     PLATFORM: linux/amd64,linux/arm64
+        #     PROGRESS: plain
+        #     BUILDER: "docker buildx"
+        #     REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
+        #     TAG: ${{ inputs.stagex_git_ref || 'staging' }}
+        #   command: registry-bootstrap-stage3
         - name: filesystem
           arguments:
             - -e

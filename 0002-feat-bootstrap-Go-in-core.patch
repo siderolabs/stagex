@@ -1,7 +1,7 @@
 From 0baf0b5b51a9857117c690c1f53aa855a7ff07a4 Mon Sep 17 00:00:00 2001
 From: Dmitrii Sharshakov <d3dx12.xx@gmail.com>
 Date: Sun, 22 Feb 2026 15:10:43 +0100
-Subject: [PATCH 2/4] feat: bootstrap Go in core
+Subject: [PATCH 2/5] feat: bootstrap Go in core
 
 Remove Go from the bootstrap path, as it can be independently
 bootstrapped from stage1 (+core-filesystem for packaging).

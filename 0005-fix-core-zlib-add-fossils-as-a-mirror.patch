@@ -1,0 +1,26 @@
+From 111482c4481b7520ee8cfaf022cde06ebb096cb2 Mon Sep 17 00:00:00 2001
+From: Dmitrii Sharshakov <d3dx12.xx@gmail.com>
+Date: Sun, 22 Feb 2026 21:14:21 +0100
+Subject: [PATCH 5/5] fix: core-zlib: add fossils as a mirror
+
+Seemingly as soon as the release is not latest it is moved to fossils.
+
+Make the build more sustainable even when version is not bumped
+immediately.
+---
+ packages/core/zlib/package.toml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/packages/core/zlib/package.toml b/packages/core/zlib/package.toml
+index 408b3212..63642e8b 100644
+--- a/packages/core/zlib/package.toml
++++ b/packages/core/zlib/package.toml
+@@ -7,4 +7,4 @@ description = "TODO"
+ hash = "9a93b2b7dfdac77ceba5a558a580e74667dd6fede4585b91eefb60f03b72df23"
+ format = "tar.gz"
+ file = "zlib-{version}.{format}"
+-mirrors = [ "https://www.zlib.net/{file}",]
++mirrors = [ "https://www.zlib.net/{file}", "https://www.zlib.net/fossils/{file}",]
+-- 
+2.53.0
+
