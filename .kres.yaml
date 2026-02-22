@@ -34,7 +34,6 @@ spec:
           nonMakeStep: true
           command: patch -d _out/stagex -p1 < tag.patch &&
             patch -d _out/stagex -p1 < ttl.sh.patch &&
-            patch -d _out/stagex -p1 < hack.patch &&
             patch -d _out/stagex -p1 < 0001-fix-make-stage3-cross-compile-for-linux-arm64-again.patch &&
             patch -d _out/stagex -p1 < 0002-fix-targets-also-skip-empty-fetch-directories-in-reg.patch &&
             patch -d _out/stagex -p1 < 0003-fix-core-llvm-bootstrap-using-a-static-build.patch &&
