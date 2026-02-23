@@ -93,54 +93,54 @@ spec:
         #     REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
         #     TAG: ${{ inputs.stagex_git_ref || 'staging' }}
         #   command: registry-bootstrap-stage3
-        - name: filesystem
-          arguments:
-            - -e
-            - -C
-            - _out/stagex
-          environment:
-            PLATFORM: linux/amd64,linux/arm64
-            PROGRESS: plain
-            BUILDER: "docker buildx"
-            REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
-            TAG: ${{ inputs.stagex_git_ref || 'staging' }}
-          command: registry-core-filesystem
-        - name: go
-          arguments:
-            - -e
-            - -C
-            - _out/stagex
-          environment:
-            PLATFORM: linux/amd64,linux/arm64
-            PROGRESS: plain
-            BUILDER: "docker buildx"
-            REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
-            TAG: ${{ inputs.stagex_git_ref || 'staging' }}
-          command: registry-core-go
-        - name: mimalloc
-          arguments:
-            - -e
-            - -C
-            - _out/stagex
-          environment:
-            PLATFORM: linux/amd64,linux/arm64
-            PROGRESS: plain
-            BUILDER: "docker buildx"
-            REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
-            TAG: ${{ inputs.stagex_git_ref || 'staging' }}
-          command: registry-core-mimalloc
-        - name: musl
-          arguments:
-            - -e
-            - -C
-            - _out/stagex
-          environment:
-            PLATFORM: linux/amd64,linux/arm64
-            PROGRESS: plain
-            BUILDER: "docker buildx"
-            REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
-            TAG: ${{ inputs.stagex_git_ref || 'staging' }}
-          command: registry-core-musl
+        # - name: filesystem
+        #   arguments:
+        #     - -e
+        #     - -C
+        #     - _out/stagex
+        #   environment:
+        #     PLATFORM: linux/amd64,linux/arm64
+        #     PROGRESS: plain
+        #     BUILDER: "docker buildx"
+        #     REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
+        #     TAG: ${{ inputs.stagex_git_ref || 'staging' }}
+        #   command: registry-core-filesystem
+        # - name: go
+        #   arguments:
+        #     - -e
+        #     - -C
+        #     - _out/stagex
+        #   environment:
+        #     PLATFORM: linux/amd64,linux/arm64
+        #     PROGRESS: plain
+        #     BUILDER: "docker buildx"
+        #     REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
+        #     TAG: ${{ inputs.stagex_git_ref || 'staging' }}
+        #   command: registry-core-go
+        # - name: mimalloc
+        #   arguments:
+        #     - -e
+        #     - -C
+        #     - _out/stagex
+        #   environment:
+        #     PLATFORM: linux/amd64,linux/arm64
+        #     PROGRESS: plain
+        #     BUILDER: "docker buildx"
+        #     REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
+        #     TAG: ${{ inputs.stagex_git_ref || 'staging' }}
+        #   command: registry-core-mimalloc
+        # - name: musl
+        #   arguments:
+        #     - -e
+        #     - -C
+        #     - _out/stagex
+        #   environment:
+        #     PLATFORM: linux/amd64,linux/arm64
+        #     PROGRESS: plain
+        #     BUILDER: "docker buildx"
+        #     REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
+        #     TAG: ${{ inputs.stagex_git_ref || 'staging' }}
+        #   command: registry-core-musl
         - name: llvm
           arguments:
             - -e
