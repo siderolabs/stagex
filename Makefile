@@ -29,9 +29,19 @@ PATCHES := \
 	tag.patch \
 	ttl.sh.patch
 
-# Bootstrap stages (seed the toolchain, amd64-only) and core packages.
+# Bootstrap stages (seed the toolchain, amd64-only).
 BOOTSTRAP := stage0 stage1 stage2 stage3
-CORE      := filesystem binutils busybox gcc make musl diffutils go
+
+# Core packages in topological (dependency) order. Each registry-* build pulls
+# its dependencies from the registry rather than building them, so the full
+# dependency closure of the packages we consume (filesystem, binutils, busybox,
+# gcc, make, musl, diffutils, go) must be built in order. Rebase per release.
+CORE := \
+	filesystem busybox libzstd mimalloc musl llvm make zlib perl attr \
+	linux-headers openssl pkgconf samurai cmake libucontext onetbb mold m4 \
+	autoconf automake binutils bison bsd-compat-headers bzip2 diffutils libtool \
+	libffi ncurses tcl sqlite3 python libxml2 gettext flex gawk gmp isl \
+	libatomic_ops mpfr mpc texinfo gcc go
 
 # Source tarballs to pre-fetch before building (fail fast on mirror issues).
 FETCH_PACKAGES := $(CORE) $(BOOTSTRAP)
@@ -54,7 +64,13 @@ endef
 all: fetch build ## Clone, patch, fetch and build the whole tree (default)
 
 .PHONY: build
-build: $(BOOTSTRAP) $(CORE) ## Build all bootstrap stages and core packages in order
+build: bootstrap core ## Build all bootstrap stages and core packages in order
+
+.PHONY: bootstrap
+bootstrap: $(BOOTSTRAP) ## Build the bootstrap stages (stage0-stage3)
+
+.PHONY: core
+core: $(CORE) ## Build the core packages in dependency order
 
 # Bootstrap seed stages are amd64-only; they build the cross/native toolchain
 # that later (multi-arch) stages depend on.

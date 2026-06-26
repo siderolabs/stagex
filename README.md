@@ -29,10 +29,14 @@ Or step by step:
 
 ```sh
 make clone      # clone upstream StageX at STAGEX_REF into _out/stagex
-make patch      # apply the siderolabs patches (tag.patch, ttl.sh.patch)
+make patch      # apply the siderolabs patches
 make fetch      # pre-fetch source tarballs
-make stage0     # build a single stage / package (stage0..stage3, then core)
+make bootstrap  # build the bootstrap stages (stage0..stage3, amd64)
+make core       # build the core packages in dependency order
 ```
+
+Individual targets work too (`make stage0`, `make binutils`, …), provided
+their dependencies have already been built and pushed.
 
 Run `make help` for the full list of targets.
 

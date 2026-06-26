@@ -56,27 +56,9 @@ spec:
         - name: stage3
           command: stage3
           environment: *build_env
-        - name: filesystem
-          command: filesystem
-          environment: *build_env
-        - name: binutils
-          command: binutils
-          environment: *build_env
-        - name: busybox
-          command: busybox
-          environment: *build_env
-        - name: gcc
-          command: gcc
-          environment: *build_env
-        - name: make
-          command: make
-          environment: *build_env
-        - name: musl
-          command: musl
-          environment: *build_env
-        - name: diffutils
-          command: diffutils
-          environment: *build_env
-        - name: go
-          command: go
+        # The core packages are built as a single step: the Makefile builds the
+        # full dependency closure in topological order (each registry-* build
+        # pulls its dependencies from the registry).
+        - name: core
+          command: core
           environment: *build_env
