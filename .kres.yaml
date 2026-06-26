@@ -22,8 +22,10 @@ spec:
             required: false
   jobs:
     - name: default
+      timeoutMinutes: 720
       buildxOptions:
         enabled: true
+        crossBuilder: true
       runnerGroup: large
       # All build logic lives in the Makefile; the steps below only invoke its
       # targets. The StageX version is pinned once via STAGEX_REF in the
