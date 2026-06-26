@@ -1,8 +1,8 @@
 diff --git a/src/targets.py b/src/targets.py
-index 8a663407..adf6958c 100644
+index 00e2bde..2b077e8 100644
 --- a/src/targets.py
 +++ b/src/targets.py
-@@ -68,6 +68,7 @@ registry-{stage}-{name}:
+@@ -69,6 +69,7 @@ registry-{stage}-{name}:
  \t  --tag $(REGISTRY_USERNAME)/{stage}-{name}:{version} \\
  \t  --tag $(REGISTRY_USERNAME)/{stage}-{name}:$(TAG) \\
  \t  --tag $(REGISTRY_USERNAME)/{stage}-{name}:latest \\

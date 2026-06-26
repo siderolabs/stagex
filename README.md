@@ -3,3 +3,62 @@
 > This is not the upstream project, nor a fork, it is a CI repository used to build AMD64+ARM64 multiplatform images in GitHub Actions
 
 [git://codeberg.org:stagex/stagex](https://codeberg.org/stagex/stagex) | [matrix://#stagex:matrix.org](https://matrix.to/#/#stagex:matrix.org) | [ircs://irc.oftc.net:6697#stagex](https://webchat.oftc.net/?channels=stagex&uio=MT11bmRlZmluZWQmMTE9MTk14d)
+
+## How it works
+
+This repository wraps the upstream [StageX](https://codeberg.org/stagex/stagex)
+build: it checks out the upstream tree, applies a small set of siderolabs
+patches and builds the bootstrap stages and core packages for `linux/amd64` and
+`linux/arm64`, pushing the intermediate results to a container registry.
+
+All of the build logic lives in the [`Makefile`](Makefile). The
+[GitHub Actions workflow](.github/workflows/ci.yaml) only calls into it, so the
+same steps can be run locally. The workflow is generated from
+[`.kres.yaml`](.kres.yaml) by [kres](https://github.com/siderolabs/kres); run
+`make rekres` after editing `.kres.yaml`.
+
+The StageX version is pinned once via `STAGEX_REF` in the `Makefile`.
+
+## Building
+
+```sh
+make all        # clone + patch + fetch + build everything
+```
+
+Or step by step:
+
+```sh
+make clone      # clone upstream StageX at STAGEX_REF into _out/stagex
+make patch      # apply the siderolabs patches (tag.patch, ttl.sh.patch)
+make fetch      # pre-fetch source tarballs
+make stage0     # build a single stage / package (stage0..stage3, then core)
+```
+
+Run `make help` for the full list of targets.
+
+Useful variables (override on the command line or via the environment):
+
+| Variable            | Default                   | Purpose                                         |
+| ------------------- | ------------------------- | ----------------------------------------------- |
+| `STAGEX_REF`        | pinned in the `Makefile`  | upstream ref (tag/branch/sha) to build          |
+| `REGISTRY_USERNAME` | `127.0.0.1:5000/stagex`   | registry url/namespace to push to               |
+| `PLATFORM`          | `linux/amd64,linux/arm64` | platforms to build (bootstrap stages are amd64) |
+| `BUILDER`           | `docker buildx`           | build backend                                   |
+
+Builds push to a registry (`push=true`), so a local build needs a writable
+registry and a `docker-container` buildx builder, e.g.:
+
+```sh
+docker run -d -p 5000:5000 --name registry registry:2
+docker buildx create --name stagex --driver docker-container --driver-opt network=host --bootstrap --use
+make all REGISTRY_USERNAME=127.0.0.1:5000/stagex
+```
+
+### Patches
+
+The patches applied to the upstream tree are kept to a minimum and rebased per
+release:
+
+- `tag.patch` — tag `registry-*` images with `:$(TAG)` (the StageX ref) in
+  addition to `:latest`.
+- `ttl.sh.patch` — also push images to `ttl.sh` for ephemeral sharing.
