@@ -1,82 +1,82 @@
 ---
 kind: auto.CI
 spec:
-    compileGHWorkflowsOnly: true
+  compileGHWorkflowsOnly: true
 ---
 kind: common.Repository
 spec:
-    mainBranch: ci
-    enableConform: true
+  mainBranch: ci
+  enableConform: true
 ---
 kind: common.GHWorkflow
 spec:
-    workflowOptions:
-        on:
-            pull_request:
-                branches:
-                    - ci
-            workflow_dispatch:
-                inputs:
-                    stagex_git_ref:
-                        description: "StageX git ref to checkout (branch, tag, sha). Leave empty to use the STAGEX_REF pinned in the Makefile."
-                        required: false
-    jobs:
-        - name: default
-          buildxOptions:
-              enabled: true
-          runnerGroup: large
-          # All build logic lives in the Makefile; the steps below only invoke its
-          # targets. The StageX version is pinned once via STAGEX_REF in the
-          # Makefile and overridden here only when the workflow is dispatched with
-          # an explicit ref.
-          steps:
-              - name: Clone stagex
-                command: clone
-                environment:
-                    STAGEX_REF: &stagex_ref ${{ inputs.stagex_git_ref }}
-              - name: Patch stagex
-                command: patch
-              - name: login-to-registry
-                conditions:
-                    - except-pull-request
-                registryLoginStep:
-                    registry: ghcr.io
-              - name: stage0
-                command: stage0
-                environment: &build_env
-                    PROGRESS: plain
-                    REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
-                    STAGEX_REF: *stagex_ref
-              - name: stage1
-                command: stage1
-                environment: *build_env
-              - name: stage2
-                command: stage2
-                environment: *build_env
-              - name: stage3
-                command: stage3
-                environment: *build_env
-              - name: filesystem
-                command: filesystem
-                environment: *build_env
-              - name: binutils
-                command: binutils
-                environment: *build_env
-              - name: busybox
-                command: busybox
-                environment: *build_env
-              - name: gcc
-                command: gcc
-                environment: *build_env
-              - name: make
-                command: make
-                environment: *build_env
-              - name: musl
-                command: musl
-                environment: *build_env
-              - name: diffutils
-                command: diffutils
-                environment: *build_env
-              - name: go
-                command: go
-                environment: *build_env
+  workflowOptions:
+    on:
+      pull_request:
+        branches:
+          - ci
+      workflow_dispatch:
+        inputs:
+          stagex_git_ref:
+            description: "StageX git ref to checkout (branch, tag, sha). Leave empty to use the STAGEX_REF pinned in the Makefile."
+            required: false
+  jobs:
+    - name: default
+      buildxOptions:
+        enabled: true
+      runnerGroup: large
+      # All build logic lives in the Makefile; the steps below only invoke its
+      # targets. The StageX version is pinned once via STAGEX_REF in the
+      # Makefile and overridden here only when the workflow is dispatched with
+      # an explicit ref.
+      steps:
+        - name: Clone stagex
+          command: clone
+          environment:
+            STAGEX_REF: &stagex_ref ${{ inputs.stagex_git_ref }}
+        - name: Patch stagex
+          command: patch
+        - name: login-to-registry
+          conditions:
+            - except-pull-request
+          registryLoginStep:
+            registry: ghcr.io
+        - name: stage0
+          command: stage0
+          environment: &build_env
+            PROGRESS: plain
+            REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
+            STAGEX_REF: *stagex_ref
+        - name: stage1
+          command: stage1
+          environment: *build_env
+        - name: stage2
+          command: stage2
+          environment: *build_env
+        - name: stage3
+          command: stage3
+          environment: *build_env
+        - name: filesystem
+          command: filesystem
+          environment: *build_env
+        - name: binutils
+          command: binutils
+          environment: *build_env
+        - name: busybox
+          command: busybox
+          environment: *build_env
+        - name: gcc
+          command: gcc
+          environment: *build_env
+        - name: make
+          command: make
+          environment: *build_env
+        - name: musl
+          command: musl
+          environment: *build_env
+        - name: diffutils
+          command: diffutils
+          environment: *build_env
+        - name: go
+          command: go
+          environment: *build_env

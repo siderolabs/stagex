@@ -59,6 +59,9 @@ make all REGISTRY_USERNAME=127.0.0.1:5000/stagex
 The patches applied to the upstream tree are kept to a minimum and rebased per
 release:
 
+- `0001-fix-make-stage3-cross-compile-for-linux-arm64-again.patch` — upstream
+  bug fix: `stage3` cross-compiles busybox/libunwind for `linux/arm64` without
+  executing the cross-built binaries on the build host. Should be upstreamed.
 - `tag.patch` — tag `registry-*` images with `:$(TAG)` (the StageX ref) in
   addition to `:latest`.
 - `ttl.sh.patch` — also push images to `ttl.sh` for ephemeral sharing.

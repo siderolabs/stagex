@@ -22,8 +22,12 @@ PLATFORM          ?= linux/amd64,linux/arm64
 PROGRESS          ?= auto
 BUILDER           ?= docker buildx
 
-# siderolabs patches applied to the upstream tree, in order.
-PATCHES := tag.patch ttl.sh.patch
+# Patches applied to the upstream tree, in order. The stage3 fix is an
+# upstream-bound bug fix; tag.patch / ttl.sh.patch are siderolabs-specific.
+PATCHES := \
+	0001-fix-make-stage3-cross-compile-for-linux-arm64-again.patch \
+	tag.patch \
+	ttl.sh.patch
 
 # Bootstrap stages (seed the toolchain, amd64-only) and core packages.
 BOOTSTRAP := stage0 stage1 stage2 stage3

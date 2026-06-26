@@ -1,0 +1,78 @@
+From c94a4f58836f869cd4c0cd783b0192d1e03a1f8d Mon Sep 17 00:00:00 2001
+From: Dmitrii Sharshakov <dmitry.sharshakov@siderolabs.com>
+Date: Tue, 17 Feb 2026 12:56:47 +0100
+Subject: [PATCH 3/5] fix: make stage3 cross-compile for linux/arm64 again
+
+Make sure busybox is installed without calling it, split libunwind
+configure and build to make sure we transition to target-native build
+after the configure step and don't try to invoke i386 on target
+
+Fixes: 52db83a839070f3b4857d87e62697f53bc9057d7 (feat: convert entire tree to be llvm native)
+---
+ packages/bootstrap/stage3/Containerfile | 28 +++++++++++++++++--------
+ 1 file changed, 19 insertions(+), 9 deletions(-)
+
+diff --git a/packages/bootstrap/stage3/Containerfile b/packages/bootstrap/stage3/Containerfile
+index 4968ef76..f57fb701 100644
+--- a/packages/bootstrap/stage3/Containerfile
++++ b/packages/bootstrap/stage3/Containerfile
+@@ -64,11 +64,12 @@ RUN --network=none <<-EOF
+ 	make CROSS_COMPILE=${TARGET}- defconfig
+ 	echo "CONFIG_STATIC=y" >> .config
+ 	make CROSS_COMPILE=${TARGET}-
+-	mkdir -p /rootfs/usr/bin
+-	cp busybox /rootfs/usr/bin
+-	cp busybox /usr/bin
+-	cd /rootfs
+-	/usr/bin/busybox --install -s usr/bin
++	make CROSS_COMPILE=${TARGET}- busybox.links
++	# Create symlinks without actually invoking busybox - this is essential for cross-compilation
++	cat busybox.links | while read link; do
++	  ln -sf busybox "/rootfs/usr/bin/$(basename "$link")"
++	done
++	cp busybox /rootfs/usr/bin/
+ 	rm -rf /busybox-*
+ EOF
+ 
+@@ -351,9 +352,18 @@ RUN --network=none <<-EOF
+ 	rm -rf /libffi-*
+ EOF
+ 
+-FROM base AS libunwind
+-ARG TARGETARCH
++# perl and other autoconf dependencies are only in the i386 image
++# However, libunwind dependencies are in target-native images
++# To overcome this, generate the config using stage2 and copy it
++FROM base AS libunwind-configure
++ARG LIBUNWIND_VERSION
++ADD fetch/libunwind-${LIBUNWIND_VERSION}.tar.gz /
++WORKDIR /libunwind-${LIBUNWIND_VERSION}
++RUN autoreconf -i
++
++FROM scratch AS libunwind
+ ARG LIBUNWIND_VERSION
++COPY --from=base /rootfs/ /
+ COPY --from=musl /rootfs/ /
+ COPY --from=busybox /rootfs/ /
+ COPY --from=make /rootfs/ /
+@@ -366,15 +376,15 @@ COPY --from=zlib /rootfs/ /
+ COPY --from=libucontext /rootfs/ /
+ ADD fetch/libunwind-${LIBUNWIND_VERSION}.tar.gz /
+ WORKDIR /libunwind-${LIBUNWIND_VERSION}
++COPY --from=libunwind-configure /libunwind-${LIBUNWIND_VERSION}/ /libunwind-${LIBUNWIND_VERSION}
+ RUN <<-EOF
+ 	set -eux
+ 	export CFLAGS="-llzma -lucontext"
+ 	export CXXFLAGS="$CFLAGS"
+ 	export CPPFLAGS="$CFLAGS"
+-	autoreconf -i
++
+ 	./configure \
+ 		--prefix=/usr \
+-		--host=${TARGET} \
+ 		--enable-cxx-exceptions \
+ 		--disable-tests
+ 	make
+-- 
+2.53.0
+
