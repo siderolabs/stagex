@@ -22,6 +22,14 @@ PLATFORM          ?= linux/amd64,linux/arm64
 PROGRESS          ?= auto
 BUILDER           ?= docker buildx
 
+# stage3 and go bootstrap from an i386 base and cross-compile to the target, so
+# their arm64 output must be built on an amd64 node (native i386 bootstrap) and
+# not emulated on the arm64 node: go's i386 Go bootstrap crashes under qemu
+# (go1.4 predates arm64) and stage3's i386 cross steps are very slow emulated.
+# CI sets this to a dedicated amd64-only buildx builder; empty locally (uses the
+# default BUILDER, single node).
+CROSS_BUILDER_NAME ?=
+
 # Patches applied to the upstream tree, in order. The stage3 fix is an
 # upstream-bound bug fix; tag.patch / ttl.sh.patch are siderolabs-specific.
 PATCHES := \
@@ -77,6 +85,12 @@ core: $(CORE) ## Build the core packages in dependency order
 # Bootstrap seed stages are amd64-only; they build the cross/native toolchain
 # that later (multi-arch) stages depend on.
 stage0 stage1 stage2: PLATFORM := linux/amd64
+
+# Route the i386-bootstrap cross-compiled packages to the amd64 builder (see
+# CROSS_BUILDER_NAME above). Only takes effect when CROSS_BUILDER_NAME is set.
+ifneq ($(strip $(CROSS_BUILDER_NAME)),)
+stage3 go: BUILDER := $(BUILDER) --builder $(CROSS_BUILDER_NAME)
+endif
 
 .PHONY: $(BOOTSTRAP)
 $(BOOTSTRAP): | $(PATCH_STAMP)

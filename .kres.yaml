@@ -32,6 +32,13 @@ spec:
       # Makefile and overridden here only when the workflow is dispatched with
       # an explicit ref.
       steps:
+        # stage3 and go bootstrap from an i386 base and cross-compile; their
+        # arm64 output must build on the amd64 node (native i386 bootstrap), not
+        # emulated on the arm64 node. This dedicated amd64-only builder is
+        # selected for those targets via CROSS_BUILDER_NAME in the Makefile.
+        - name: Set up amd64 cross-compile builder
+          nonMakeStep: true
+          command: docker buildx create --name stagex-amd64 --driver remote --platform linux/amd64,linux/arm64 tcp://buildkit-amd64.ci.svc.cluster.local:1234
         - name: Clone stagex
           command: clone
           environment:
@@ -49,6 +56,7 @@ spec:
             PROGRESS: plain
             REGISTRY_USERNAME: "${{ github.event_name != 'pull_request' && 'ghcr.io' || 'registry.dev.siderolabs.io' }}/${{ github.repository_owner }}/stagex"
             STAGEX_REF: *stagex_ref
+            CROSS_BUILDER_NAME: stagex-amd64
         - name: stage1
           command: stage1
           environment: *build_env
