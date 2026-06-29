@@ -66,6 +66,9 @@ release:
 - `0001-fix-make-stage3-cross-compile-for-linux-arm64-again.patch` — upstream
   bug fix: `stage3` cross-compiles busybox/libunwind for `linux/arm64` without
   executing the cross-built binaries on the build host. Should be upstreamed.
+- `0002-fix-core-llvm-rm-nsan-on-arm64.patch` — upstream bug fix: `rm -f` the
+  x86-only NSan runtime so the `core-llvm` install step does not fail on
+  `linux/arm64` (where it is never built). Should be upstreamed.
 - `tag.patch` — tag `registry-*` images with `:$(TAG)` (the StageX ref) in
   addition to `:latest`.
 - `ttl.sh.patch` — also push images to `ttl.sh` for ephemeral sharing.

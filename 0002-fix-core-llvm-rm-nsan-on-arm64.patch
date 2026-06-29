@@ -1,0 +1,25 @@
+From: Dmitrii Sharshakov <dmitry.sharshakov@siderolabs.com>
+Subject: [PATCH] fix: core-llvm: rm -f the x86-only nsan runtime on arm64
+
+LLVM's NumericalStabilitySanitizer (nsan) is only built on some platforms
+(x86), so on linux/arm64 no libclang_rt.nsan* files exist and the bare `rm`
+fails the build. Use `rm -f`.
+
+Rebased from siderolabs/stagex#9 (0004-fix-core-llvm-fix-building-on-linux-arm64)
+onto StageX 2026.06.0 (llvm 22, $MAJOR_VERSION); the libatomic hunk from that
+patch is obsolete here.
+
+diff --git a/packages/core/llvm/Containerfile b/packages/core/llvm/Containerfile
+index 44fe1ec..25090a0 100644
+--- a/packages/core/llvm/Containerfile
++++ b/packages/core/llvm/Containerfile
+@@ -242,7 +242,8 @@ RUN --network=none <<-EOF
+ 
+ 	# NSan, for whatever reason, is not being reproducibly built. It's removed here as it
+ 	# _should_ be unpopular and not a blocker, but ideally this would be solved (TODO).
+-	rm /rootfs/usr/lib/clang/$MAJOR_VERSION/lib/${TARGET}/libclang_rt.nsan*
++	# NSan is only built on some platforms (x86), so -f to avoid failing on arm64 where it is absent.
++	rm -f /rootfs/usr/lib/clang/$MAJOR_VERSION/lib/${TARGET}/libclang_rt.nsan*
+ EOF
+ 
+ RUN --network=none <<-EOF
