@@ -35,6 +35,7 @@ CROSS_BUILDER_NAME ?=
 PATCHES := \
 	0001-fix-make-stage3-cross-compile-for-linux-arm64-again.patch \
 	0002-fix-core-llvm-rm-nsan-on-arm64.patch \
+	0003-fix-core-rust-add-aarch64-musl-mrustc-target.patch \
 	tag.patch \
 	ttl.sh.patch
 

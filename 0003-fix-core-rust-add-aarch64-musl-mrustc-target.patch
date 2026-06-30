@@ -1,0 +1,44 @@
+Subject: [PATCH] fix: core-rust: add aarch64-unknown-linux-musl target to mrustc
+
+mrustc 0.12.0 has no aarch64-unknown-linux-musl target spec (only the gnu
+variant and x86_64-musl), so bootstrapping rustc for linux/arm64 aborts with
+"Unknown target name 'aarch64-unknown-linux-musl'". Add the musl branch,
+modeled on the existing aarch64-unknown-linux-gnu one.
+
+diff --git a/packages/core/rust/Containerfile b/packages/core/rust/Containerfile
+index dc170e8..dc033f2 100644
+--- a/packages/core/rust/Containerfile
++++ b/packages/core/rust/Containerfile
+@@ -234,6 +234,8 @@ RUN --network=none <<-EOF
+ 	patch -p1 -i ../aea331a4f60535eb6c146b82c50255334e4abf3a.patch
+ 	# Patch undefined behavior `mrustc` relies on, which `g++` graces, but `clang++` doesn't
+ 	patch -p1 -i ../mrustc-undefined-behavior.patch
++	# Teach `mrustc` the `aarch64-unknown-linux-musl` target so `rustc` bootstraps on arm64
++	patch -p1 -i ../mrustc-aarch64-musl.patch
+ 	# `inline` a `const static` so its value may be used from distinct objects which don't inherently
+ 	# have visibility. Weirdly, `clang++` only requires this with `-O0` and not `-O1`. Presumably,
+ 	# with even a minimal amount of optimizations, this will already be inlined as necessary.
+diff --git a/packages/core/rust/patches/mrustc-aarch64-musl.patch b/packages/core/rust/patches/mrustc-aarch64-musl.patch
+new file mode 100644
+index 0000000..70072ab
+--- /dev/null
++++ b/packages/core/rust/patches/mrustc-aarch64-musl.patch
+@@ -0,0 +1,18 @@
++diff --git a/src/trans/target.cpp b/src/trans/target.cpp
++index b864d2b..b1cd85f 100644
++--- a/src/trans/target.cpp
+++++ b/src/trans/target.cpp
++@@ -469,6 +469,13 @@ namespace
++                 ARCH_ARM64
++                 };
++         }
+++        else if(target_name == "aarch64-linux-musl" || target_name == "aarch64-unknown-linux-musl")
+++        {
+++            return TargetSpec {
+++                "unix", "linux", "musl", {CodegenMode::Gnu11, false, "aarch64-linux-musl", BACKEND_C_OPTS_GNU},
+++                ARCH_ARM64
+++                };
+++        }
++         else if(target_name == "m68k-linux-gnu" || target_name == "m68k-unknown-linux-gnu")
++         {
++             return TargetSpec {

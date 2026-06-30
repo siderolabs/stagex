@@ -69,6 +69,10 @@ release:
 - `0002-fix-core-llvm-rm-nsan-on-arm64.patch` — upstream bug fix: `rm -f` the
   x86-only NSan runtime so the `core-llvm` install step does not fail on
   `linux/arm64` (where it is never built). Should be upstreamed.
+- `0003-fix-core-rust-add-aarch64-musl-mrustc-target.patch` — upstream bug fix:
+  teach the `mrustc` Rust bootstrapper the `aarch64-unknown-linux-musl` target
+  so `core-rust` bootstraps `rustc` on `linux/arm64`. Should be upstreamed (to
+  StageX, and ideally the target to mrustc).
 - `tag.patch` — tag `registry-*` images with `:$(TAG)` (the StageX ref) in
   addition to `:latest`.
 - `ttl.sh.patch` — also push images to `ttl.sh` for ephemeral sharing.
