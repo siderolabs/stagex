@@ -35,7 +35,6 @@ CROSS_BUILDER_NAME ?=
 PATCHES := \
 	0001-fix-make-stage3-cross-compile-for-linux-arm64-again.patch \
 	0002-fix-core-llvm-rm-nsan-on-arm64.patch \
-	0003-fix-core-rust-add-aarch64-musl-mrustc-target.patch \
 	tag.patch \
 	ttl.sh.patch
 
@@ -45,14 +44,15 @@ BOOTSTRAP := stage0 stage1 stage2 stage3
 # Core packages in topological (dependency) order. Each registry-* build pulls
 # its dependencies from the registry rather than building them, so the full
 # dependency closure of the packages we consume (filesystem, binutils, busybox,
-# gcc, make, musl, diffutils, go, rust) must be built in order. llvm-libgcc is a
-# subpackage of llvm built as its own target. Rebase per release.
+# gcc, make, musl, diffutils, go) must be built in order. Rebase per release.
+# rust is deferred: arm64 rust needs an amd64-cross bootstrap rework (mrustc
+# 0.12.0 can't compile Rust core for aarch64); it will return in a separate change.
 CORE := \
 	filesystem busybox libzstd mimalloc musl llvm make zlib perl attr \
 	linux-headers openssl pkgconf samurai cmake libucontext onetbb mold m4 autoconf \
-	automake binutils bison bsd-compat-headers bzip2 ca-certificates curl diffutils libtool libffi \
-	ncurses tcl sqlite3 python libxml2 gettext flex gawk gmp isl \
-	libatomic_ops mpfr mpc texinfo gcc go libatomic-stub llvm-libgcc llvm21 rust
+	automake binutils bison bsd-compat-headers bzip2 diffutils libtool libffi ncurses tcl \
+	sqlite3 python libxml2 gettext flex gawk gmp isl libatomic_ops mpfr \
+	mpc texinfo gcc go
 
 # Source tarballs to pre-fetch before building (fail fast on mirror issues).
 FETCH_PACKAGES := $(CORE) $(BOOTSTRAP)
