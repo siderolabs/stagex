@@ -15,6 +15,12 @@ STAGEX_REPO ?= https://codeberg.org/stagex/stagex.git
 STAGEX_REF  := $(or $(strip $(STAGEX_REF)),2026.06.0)
 STAGEX_DIR  ?= _out/stagex
 
+# Source-cache image: a flat image holding the pre-fetched `fetch/` tree, keyed
+# by the upstream ref. Pulled to seed fetch.py so static sources skip the mirror
+# round-trip. Always ghcr.io (public) so PR builds can pull it without auth — do
+# not derive from REGISTRY_USERNAME, which points at the dev registry on PRs.
+FETCH_CACHE_IMAGE ?= ghcr.io/siderolabs/stagex/fetch-cache:$(STAGEX_REF)
+
 # Build settings, overridable from the environment / CI. Keep these free of
 # inline comments: trailing characters would leak into image refs and flags.
 REGISTRY_USERNAME ?= 127.0.0.1:5005/stagex
@@ -118,6 +124,30 @@ patch: $(PATCH_STAMP) ## Apply the siderolabs patches to the StageX tree
 .PHONY: fetch
 fetch: | $(PATCH_STAMP) ## Pre-fetch source tarballs for the build
 	cd $(STAGEX_DIR) && python3 ./src/fetch.py $(FETCH_PACKAGES)
+
+# Seed the fetch cache from the ghcr.io cache image before building. fetch.py
+# verifies each cached file's sha256 and skips its download on a match, so this
+# is purely additive: only new/changed sources still hit upstream mirrors, and a
+# stale or missing cache only slows the build (never breaks it). Best-effort: a
+# missing image just warns and lets fetch.py download everything as before.
+.PHONY: fetch-seed
+fetch-seed: | $(PATCH_STAMP) ## Seed the fetch cache from the ghcr.io cache image
+	if crane export $(FETCH_CACHE_IMAGE) - > $(STAGEX_DIR)/.seed.tar; then \
+		tar -x -C $(STAGEX_DIR) -f $(STAGEX_DIR)/.seed.tar; \
+		echo "Seeded fetch cache from $(FETCH_CACHE_IMAGE)"; \
+	else \
+		echo "WARNING: fetch-cache $(FETCH_CACHE_IMAGE) unavailable; continuing without seed"; \
+	fi
+	rm -f $(STAGEX_DIR)/.seed.tar
+
+# Package the locally fetched source tree and push it as the cache image. Run
+# this after `make fetch` (so $(STAGEX_DIR)/fetch is fully populated) and after
+# `crane auth login ghcr.io`. Refresh when STAGEX_REF changes.
+.PHONY: fetch-cache-push
+fetch-cache-push: | $(PATCH_STAMP) ## Package the fetched sources and push the cache image
+	tar -C $(STAGEX_DIR) -cf $(STAGEX_DIR)/.fetch-cache.tar fetch
+	crane append -f $(STAGEX_DIR)/.fetch-cache.tar -t $(FETCH_CACHE_IMAGE)
+	rm -f $(STAGEX_DIR)/.fetch-cache.tar
 
 .PHONY: clean
 clean: ## Remove the checked out StageX tree

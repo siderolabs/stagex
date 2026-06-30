@@ -50,6 +50,12 @@ spec:
             - except-pull-request
           registryLoginStep:
             registry: ghcr.io
+        # Seed the fetch cache from the public ghcr.io image so the build skips
+        # most upstream source downloads (and survives flaky GNU mirrors).
+        - name: Seed fetch cache
+          command: fetch-seed
+          environment:
+            STAGEX_REF: *stagex_ref
         - name: stage0
           command: stage0
           environment: &build_env
