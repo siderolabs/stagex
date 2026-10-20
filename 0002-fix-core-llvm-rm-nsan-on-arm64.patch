@@ -6,14 +6,14 @@ LLVM's NumericalStabilitySanitizer (nsan) is only built on some platforms
 fails the build. Use `rm -f`.
 
 Rebased from siderolabs/stagex#9 (0004-fix-core-llvm-fix-building-on-linux-arm64)
-onto StageX 2026.06.0 (llvm 22, $MAJOR_VERSION); the libatomic hunk from that
+onto StageX 2026.09.0 (llvm 22, $MAJOR_VERSION); the libatomic hunk from that
 patch is obsolete here.
 
 diff --git a/packages/core/llvm/Containerfile b/packages/core/llvm/Containerfile
-index 44fe1ec..25090a0 100644
+index af40723e4..845a6a532 100644
 --- a/packages/core/llvm/Containerfile
 +++ b/packages/core/llvm/Containerfile
-@@ -242,7 +242,8 @@ RUN --network=none <<-EOF
+@@ -246,7 +246,8 @@ RUN --network=none <<-EOF
  
  	# NSan, for whatever reason, is not being reproducibly built. It's removed here as it
  	# _should_ be unpopular and not a blocker, but ideally this would be solved (TODO).

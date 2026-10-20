@@ -12,7 +12,7 @@
 # truth for the version: CI may pass it through (possibly empty), in which case
 # we fall back to the pinned default below.
 STAGEX_REPO ?= https://codeberg.org/stagex/stagex.git
-STAGEX_REF  := $(or $(strip $(STAGEX_REF)),2026.06.0)
+STAGEX_REF  := $(or $(strip $(STAGEX_REF)),2026.09.0)
 STAGEX_DIR  ?= _out/stagex
 
 # Source-cache image: a flat image holding the pre-fetched `fetch/` tree, keyed
@@ -57,8 +57,8 @@ BOOTSTRAP := stage0 stage1 stage2 stage3
 # 0.12.0 can't bootstrap Rust on arm64, so this amd64 rustc is the seed for the
 # arm64-hosted rustc that is cross-built in siderolabs/tools.
 CORE := \
-	filesystem busybox libzstd mimalloc musl llvm make zlib perl attr \
-	linux-headers openssl pkgconf samurai cmake libucontext onetbb mold m4 autoconf \
+	filesystem busybox libzstd mimalloc musl llvm make zlib perl linux-headers attr \
+	openssl pkgconf samurai cmake libucontext onetbb mold m4 autoconf \
 	automake binutils bison bsd-compat-headers bzip2 ca-certificates curl diffutils libtool libffi \
 	ncurses tcl sqlite3 python libxml2 gettext flex gawk gmp isl \
 	libatomic_ops mpfr mpc texinfo gcc go libatomic-stub llvm-libgcc llvm21 rust
